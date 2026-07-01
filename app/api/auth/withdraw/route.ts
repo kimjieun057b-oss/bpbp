@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-// SERVICE_ROLE_KEY를 사용해야 유저 삭제 권한이 생김
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// SERVICE_ROLE_KEY 기반 공용 admin 클라이언트를 재사용 (env 누락 시 lib에서 명확한 에러로 throw됨)
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const BUCKET = 'board-files';
 

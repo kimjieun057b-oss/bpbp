@@ -1,12 +1,8 @@
 // 일반 로그인
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// admin_user 테이블 조회를 위해 RLS 우회가 필요하므로 공용 admin 클라이언트를 재사용
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin';
 
 export async function POST(request: Request) {
     try {
