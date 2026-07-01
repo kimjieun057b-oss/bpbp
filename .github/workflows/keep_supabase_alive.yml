@@ -1,0 +1,16 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # 사흘(3일)마다 한 번씩 한국 시간 기준 새벽에 실행 (UTC 기준 18:00은 한국 시간 오전 3:00)
+    - cron: '0 18 */3 * *'
+  workflow_dispatch: # GitHub UI에서 수동으로도 실행할 수 있게 설정
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase API
+        run: |
+          curl -X GET "${{ secrets.SUPABASE_URL }}/auth/v1/health" \
+          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"

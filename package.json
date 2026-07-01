@@ -1,0 +1,38 @@
+{
+  "name": "template",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@mgreminger/quill-image-resize-module": "^1.2.1",
+    "@supabase/supabase-js": "^2.108.1",
+    "googleapis": "^173.0.0",
+    "next": "16.2.9",
+    "nodemailer": "^9.0.0",
+    "quill-better-table": "^1.2.10",
+    "quill-delta": "^5.1.0",
+    "quill-delta-to-html": "^0.12.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-kakao-maps-sdk": "^1.2.1",
+    "react-quill-new": "^3.8.3",
+    "solapi": "^6.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "kakao.maps.d.ts": "^0.1.40",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
