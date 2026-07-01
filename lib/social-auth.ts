@@ -23,3 +23,20 @@ export const signInWithGoogle = async () => {
     throw error;
   }
 };
+
+export const signInWithKakao = async () => {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "kakao",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("카카오 로그인 진행 중 에러 발생:", error);
+    throw error;
+  }
+};

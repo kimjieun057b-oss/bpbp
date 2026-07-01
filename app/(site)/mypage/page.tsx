@@ -1,19 +1,24 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { Dispatch, SetStateAction, useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import MyInquireList from "@/components/board/user/MyInquireList";
+import Toast from "@/components/common/Toast";
 
 export default function Mypage() {
 
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [vaild, setVaild] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [pendingWithdraw, setPendingWithdraw] = useState(false);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error) throw error;
-        
+
         if (user) {
           setUserId(user.id);
         }
@@ -27,13 +32,28 @@ export default function Mypage() {
     fetchUser();
   }, []);
 
-  const onClickWithdraw = useCallback(async () => {
+  // 탈퇴 완료 토스트를 닫을 때 홈으로 이동
+  const handleCloseToast: Dispatch<SetStateAction<string | null>> = (value) => {
+    if (isSuccess && value === null) {
+      window.location.href = '/';
+      return;
+    }
+    setVaild(value);
+    if (value === null) setPendingWithdraw(false);
+  };
+
+  const onClickWithdraw = useCallback(() => {
     if (!userId) {
-      alert("유저 정보를 찾을 수 없습니다. 다시 로그인해 주세요.");
+      setVaild("유저 정보를 찾을 수 없습니다. 다시 로그인해 주세요.");
       return;
     }
 
-    if (!window.confirm("정말로 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.")) return;
+    setVaild("정말로 탈퇴하시겠습니까? 작성한 문의글을 포함한 모든 데이터가 삭제됩니다.");
+    setPendingWithdraw(true);
+  }, [userId]);
+
+  const handleWithdrawConfirm = useCallback(async () => {
+    if (!userId) return;
 
     try {
       const response = await fetch('/api/auth/withdraw', {
@@ -45,14 +65,17 @@ export default function Mypage() {
       const result = await response.json();
 
       if (result.success) {
-        alert(result.message);
         await supabase.auth.signOut();
-        window.location.href = '/';
+        setIsSuccess(true);
+        setVaild(result.message);
       } else {
-        alert(result.error);
+        setVaild(result.error || "탈퇴 처리에 실패했습니다.");
       }
     } catch (error) {
       console.error(error);
+      setVaild("탈퇴 처리 중 오류가 발생했습니다.");
+    } finally {
+      setPendingWithdraw(false);
     }
   }, [userId]);
 
@@ -64,6 +87,7 @@ export default function Mypage() {
 
 // 💡 ON DELETE SET NULL이란?
 // auth.users에서 유저 계정이 삭제되면, 해당 유저가 작성한 글, 프로필, 장바구니 등의 데이터는 user_id를 NULL로 설정하여 연결을 끊어주는 방식입니다. 이는 데이터의 무결성을 유지하는 데 도움이 됩니다. (데이터 유지)
+// -> /api/auth/withdraw 에서 DB 설정에 의존하지 않고 앱 레벨에서 명시적으로 문의글/댓글/첨부파일을 먼저 삭제하도록 처리함
 
   return (
     <article>
@@ -73,6 +97,11 @@ export default function Mypage() {
         <button onClick={onClickWithdraw}>탈퇴</button>
         <button>비밀번호 재설정</button>
       </div>
+      <Toast
+        vaild={vaild}
+        setVaild={handleCloseToast}
+        onConfirm={pendingWithdraw ? handleWithdrawConfirm : undefined}
+      />
     </article>
   );
 }

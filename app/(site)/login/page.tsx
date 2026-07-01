@@ -11,7 +11,9 @@ export default function LoginPage () {
                 <p>로그인</p>
               </div>
               <div>
-                {/* <NomalLoginForm/> */}
+                {/* nomal : 관리자 */}
+                <NomalLoginForm/>
+                {/* 유저 이메일 */}
                 <MailLoginForm/>
               </div>
             </div>

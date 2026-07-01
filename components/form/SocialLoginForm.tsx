@@ -1,5 +1,5 @@
 "use client";
-import { signInWithGoogle } from "@/lib/social-auth";
+import { signInWithGoogle, signInWithKakao } from "@/lib/social-auth";
 import { useState } from "react";
 export default function SocialLoginForm() {
     // 3. Social login (supabase auth)
@@ -8,6 +8,7 @@ export default function SocialLoginForm() {
 
     const onClickGoogleLogin = async () => {
         try {
+            setLoading(true);
             await signInWithGoogle();
         } catch (error) {
             alert("구글 로그인에 실패했습니다. 다시 시도해주세요.");
@@ -15,10 +16,23 @@ export default function SocialLoginForm() {
         }
     }
 
+    const onClickKakaoLogin = async () => {
+        try {
+            setLoading(true);
+            await signInWithKakao();
+        } catch (error) {
+            alert("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
+            setLoading(false);
+        }
+    }
+
     return (
-        <div>
+        <div className="flex gap-2">
             <button type="button" onClick={onClickGoogleLogin} disabled={loading}>
                 {loading ? "Logging in..." : "Google login"}
+            </button>
+            <button type="button" onClick={onClickKakaoLogin} disabled={loading}>
+                {loading ? "Logging in..." : "Kakao login"}
             </button>
         </div>
     )

@@ -1,7 +1,7 @@
-import NoticeDetail from "@/components/board/NoticeDetail";
+import NoticeList from "@/components/board/NoticeList";
 
-export default function AdminNoticeDetailPage() {
+export default function AdminNoticeListPage() {
     return (
-        <NoticeDetail />
+        <NoticeList />
     );
 }

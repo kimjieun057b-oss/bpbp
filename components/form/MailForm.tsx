@@ -56,45 +56,45 @@ export default function MailForm() {
 
         if (submitLoading) return;
 
-        // if (!form.name.trim()) {
-        //     alert("회사명/이름 항목을 입력해주세요.")
-        //     return;
-        // }
-        // if (!form.phone.trim()) {
-        //     alert("연락처 항목을 입력해주세요.")
-        //     return;
-        // }
-        // if (!/^[0-9]{10,11}$/.test(form.phone)) {
-        //     alert("연락처는 숫자만 10~11자리로 입력해주세요.")
-        //     return;
-        // }
+        if (!form.name.trim()) {
+            alert("회사명/이름 항목을 입력해주세요.")
+            return;
+        }
+        if (!form.phone.trim()) {
+            alert("연락처 항목을 입력해주세요.")
+            return;
+        }
+        if (!/^[0-9]{10,11}$/.test(form.phone)) {
+            alert("연락처는 숫자만 10~11자리로 입력해주세요.")
+            return;
+        }
 
-        // if (!form.email.trim()) {
-        //     alert("이메일 항목을 입력해주세요.")
-        //     return;
-        // } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-        //     alert("올바른 이메일 양식을 입력해주세요.")
-        //     return;
-        // }
+        if (!form.email.trim()) {
+            alert("이메일 항목을 입력해주세요.")
+            return;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+            alert("올바른 이메일 양식을 입력해주세요.")
+            return;
+        }
 
-        // if (!form.contents.trim()) {
-        //     alert("문의내용을 입력해주세요.");
-        //     return;
-        // }
+        if (!form.contents.trim()) {
+            alert("문의내용을 입력해주세요.");
+            return;
+        }
 
-        // if (!form.privacy) {
-        //     alert("개인정보 수집 및 이용 동의를 해주세요.");
-        //     return
-        // }
+        if (!form.privacy) {
+            alert("개인정보 수집 및 이용 동의를 해주세요.");
+            return
+        }
 
-        // if (form.file) {
-        //     const ext = form.file.name.split('.').pop()?.toLowerCase() ?? "";
-        //     const allowedExtensions = ["jpg", "jpeg"];
-        //     if (!allowedExtensions.includes(ext)) {
-        //         alert("JPG 파일만 업로드 가능합니다.");
-        //         return;
-        //     }
-        // }
+        if (form.file) {
+            const ext = form.file.name.split('.').pop()?.toLowerCase() ?? "";
+            const allowedExtensions = ["jpg", "jpeg"];
+            if (!allowedExtensions.includes(ext)) {
+                alert("JPG 파일만 업로드 가능합니다.");
+                return;
+            }
+        }
 
         // API
         try {
