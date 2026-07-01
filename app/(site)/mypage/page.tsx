@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
+import MyInquireList from "@/components/board/user/MyInquireList";
 
 export default function Mypage() {
 
@@ -67,6 +68,8 @@ export default function Mypage() {
   return (
     <article>
       <div>
+        <h2>내 문의 목록</h2>
+        <MyInquireList />
         <button onClick={onClickWithdraw}>탈퇴</button>
         <button>비밀번호 재설정</button>
       </div>

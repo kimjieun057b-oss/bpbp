@@ -57,7 +57,7 @@ export default function InquireDetailUser() {
         }
     };
 
-    const { remove, loading: deleteLoading } = useDelete('/api/inquire/board', {
+    const { remove, loading: deleteLoading } = useDelete('/api/inquire/board-user', {
         onSuccess: () => {
             setShowDeleteConfirm(false);
             setDeletePassword("");
@@ -80,7 +80,7 @@ export default function InquireDetailUser() {
             if (pw) headers['X-Password'] = pw;
             if (userId) headers['X-User-Id'] = userId;
 
-            const res = await fetch(`/api/inquire/board/${id}`, { headers });
+            const res = await fetch(`/api/inquire/board-user/${id}`, { headers });
             const result = await res.json();
 
             if (result.error === "REQUIRED_PASSWORD") {
@@ -125,7 +125,7 @@ export default function InquireDetailUser() {
                 const headers: Record<string, string> = {};
                 if (userId) headers['X-User-Id'] = userId;
 
-                const res = await fetch(`/api/inquire/board/${id}`, { headers });
+                const res = await fetch(`/api/inquire/board-user/${id}`, { headers });
                 const result = await res.json();
 
                 if (result.error === "REQUIRED_PASSWORD") {
@@ -148,16 +148,10 @@ export default function InquireDetailUser() {
         initializeUserAndData();
     }, [id]);
 
-    // const handlePasswordSubmit = (pw: string) => {
-    //     if (!pw.trim()) { setVaild("비밀번호를 입력해주세요."); return; }
-    //     fetchDetail(pw);
-    // };
-
-    // const handlePasswordConfirm = () => {
-    //     if (!deletePassword.trim()) { setVaild("비밀번호를 입력해주세요."); return; }
-    //     setVaild("삭제하시겠습니까?");
-    //     setPendingDelete(true);
-    // };
+    const handlePasswordSubmit = (pw: string) => {
+        if (!pw.trim()) { setVaild("비밀번호를 입력해주세요."); return; }
+        fetchDetail(pw);
+    };
 
     const handleActionConfirm = () => {
         if (isMyRegisteredPost) {
@@ -183,7 +177,7 @@ export default function InquireDetailUser() {
                             <div className="h-0.5 bg-primary" />
                             <div className="p-6">
                                 <p className="text-sm text-body mb-4 text-center">비밀글입니다. 비밀번호를 입력해주세요.</p>
-                                <PasswordForm onSubmit={handleActionConfirm} loading={loading} />
+                                <PasswordForm onSubmit={handlePasswordSubmit} loading={loading} />
                                 <button
                                     onClick={() => router.back()}
                                     className="w-full mt-3 btn-ghost text-sm"

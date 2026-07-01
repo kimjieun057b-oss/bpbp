@@ -11,6 +11,8 @@ import { supabase } from "@/lib/supabase";
 interface InquireBoardFormOwnProps {
     editId?: number;
     initialData?: Partial<Omit<InquireBoardFormProps, 'file_url'>>;
+    // 수정 대상 글의 작성자 user_id (로그인한 본인 글이면 비밀번호 없이 수정 가능)
+    ownerUserId?: string | null;
 }
 
 // 비회원, 회원 상관없이 문의남김 - 비밀글 (비밀번호)
@@ -28,7 +30,7 @@ interface InquireBoardFormOwnProps {
 // 4. supabase email login : 비밀번호 재설정
 // 5. 탈퇴 시, 유저의 데이터 (문의글) 모두 삭제, 탈퇴 알림창 - Toast로 변경
 // 6. social login - google error 확인, kakao 추가
-export default function InquireBoardUserForm({ editId, initialData }: InquireBoardFormOwnProps = {}) {
+export default function InquireBoardUserForm({ editId, initialData, ownerUserId }: InquireBoardFormOwnProps = {}) {
     const isEditMode = !!editId;
 
     const [form, setForm] = useState<InquireBoardFormProps>({
@@ -49,32 +51,35 @@ export default function InquireBoardUserForm({ editId, initialData }: InquireBoa
     const [vaild, setVaild] = useState<string | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    // 로그인 회원 정보 가져오기
+    // 로그인 회원 정보 가져오기 (수정 모드에서는 본인 글 여부 확인을 위해서만 사용)
     useEffect(() => {
-         // 수정 모드에서는 회원 정보를 가져오지 않음
-        if (isEditMode) return;
-
         const checkUser = async () => {
             const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                setUserId(user.id);
+            if (!user) return;
 
-                const email = user.email ?? "";
-                const [mailId, mailAddress] = email.split("@");
+            setUserId(user.id);
 
-                // 이름은 supabase 메타데이터에 등록된 이름이 있다면 쓰고, 없으면 이메일 ID를 임시로 노출
-                const userName = user.user_metadata?.name || user.user_metadata?.full_name || mailId;
+            // 신규 작성 시에만 회원 정보로 이름/이메일을 자동 채움
+            if (isEditMode) return;
 
-                setForm((prev) => ({
-                    ...prev,
-                    name: userName,
-                    mail_id: mailId || "",
-                    mail_address: mailAddress || "",
-                }));
-            }
+            const email = user.email ?? "";
+            const [mailId, mailAddress] = email.split("@");
+
+            // 이름은 supabase 메타데이터에 등록된 이름이 있다면 쓰고, 없으면 이메일 ID를 임시로 노출
+            const userName = user.user_metadata?.name || user.user_metadata?.full_name || mailId;
+
+            setForm((prev) => ({
+                ...prev,
+                name: userName,
+                mail_id: mailId || "",
+                mail_address: mailAddress || "",
+            }));
         };
         checkUser();
     }, [isEditMode]);
+
+    // 로그인한 회원 본인이 작성한 글을 수정하는 경우 (비밀번호 입력 없이 수정 가능)
+    const isOwnerEdit = isEditMode && !!ownerUserId && !!userId && ownerUserId === userId;
 
     const handleCloseToast: React.Dispatch<React.SetStateAction<string | null>> = (value) => {
         if (isSuccess) {
@@ -120,7 +125,7 @@ export default function InquireBoardUserForm({ editId, initialData }: InquireBoa
         if (!form.mail_id.trim() || !form.mail_address.trim()) { setVaild("이메일을 입력해주세요."); return; }
         if (!form.title.trim()) { setVaild("제목을 입력해주세요."); return; }
         if (!form.contents.replace(/<[^>]*>/g, '').trim()) { setVaild("내용을 입력해주세요."); return; }
-        if (!form.password_hash.trim()) { setVaild("비밀번호를 입력해주세요."); return; }
+        if (!isOwnerEdit && !form.password_hash.trim()) { setVaild("비밀번호를 입력해주세요."); return; }
         if (!isEditMode && !form.privacy) { setVaild("개인정보처리방침을 동의해주세요."); return; }
 
         const formData = new FormData();
@@ -139,13 +144,17 @@ export default function InquireBoardUserForm({ editId, initialData }: InquireBoa
         }
 
         if (isEditMode) {
-            formData.append('password', form.password_hash);
+            if (isOwnerEdit) {
+                formData.append('user_id', userId!);
+            } else {
+                formData.append('password', form.password_hash);
+            }
             await update(editId, formData);
         } else {
             formData.append('password_hash', form.password_hash);
             await create(formData);
         }
-    }, [form, create, update, loading, isEditMode, editId]);
+    }, [form, create, update, loading, isEditMode, editId, isOwnerEdit, userId]);
 
     const cancelHref = isEditMode ? `/inquire/${editId}` : '/inquire';
 
@@ -242,6 +251,9 @@ export default function InquireBoardUserForm({ editId, initialData }: InquireBoa
                         />
                     </div>
 
+                    {isOwnerEdit ? (
+                        <p className="text-xs text-muted">회원 본인 글은 비밀번호 입력 없이 수정할 수 있습니다.</p>
+                    ) : (
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="password_hash" className="form-label">
                             비밀번호 <span className="text-red-400">*</span>
@@ -257,6 +269,7 @@ export default function InquireBoardUserForm({ editId, initialData }: InquireBoa
                             className="form-input"
                         />
                     </div>
+                    )}
 
                     <div className="flex flex-col gap-1.5">
                         <label className="form-label">첨부파일</label>

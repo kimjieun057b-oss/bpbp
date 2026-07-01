@@ -1,4 +1,4 @@
-// 문의 상세 조회/수정/삭제
+// 문의 상세 조회/수정/삭제 - 회원 인지 가능 (본인 글이면 비밀번호 없이 조회/수정/삭제 가능)
 // table: inquire_board
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
@@ -26,6 +26,7 @@ export async function GET(request: Request, { params }: Params) {
     try {
         const { id } = await params;
         const password = request.headers.get('X-Password');
+        const requestUserId = request.headers.get('X-User-Id');
         const admin = await isAdmin();
 
         const { data, error } = await supabaseAdmin
@@ -38,7 +39,10 @@ export async function GET(request: Request, { params }: Params) {
             return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
         }
 
-        if (data.privacy && !admin) {
+        // 로그인한 회원 본인이 작성한 글이면 비밀글이어도 비밀번호 없이 조회 가능
+        const isOwner = !!data.user_id && !!requestUserId && data.user_id === requestUserId;
+
+        if (data.privacy && !admin && !isOwner) {
 
             // 최초 진입 시 비밀번호를 아예 안 보내준 경우
             if (!password) {
@@ -73,10 +77,11 @@ export async function PATCH(request: Request, { params }: Params) {
         const admin = await isAdmin();
         const formData = await request.formData();
         const password = formData.get('password');
+        const bypassUserId = formData.get('user_id');
 
         const { data: existing, error: fetchError } = await supabaseAdmin
             .from('inquire_board')
-            .select('password_hash, file_url')
+            .select('password_hash, file_url, user_id')
             .eq('id', id)
             .single();
 
@@ -84,7 +89,10 @@ export async function PATCH(request: Request, { params }: Params) {
             return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
         }
 
-        if (!admin) {
+        // 로그인한 회원 본인이 작성한 글이면 비밀번호 검증 없이 수정 가능
+        const isOwner = !!existing.user_id && typeof bypassUserId === 'string' && bypassUserId === existing.user_id;
+
+        if (!admin && !isOwner) {
             if (typeof password !== 'string' || !password.trim()) {
                 return NextResponse.json({ error: '비밀번호를 입력해 주세요.' }, { status: 400 });
             }
@@ -138,7 +146,7 @@ export async function PATCH(request: Request, { params }: Params) {
             .from('inquire_board')
             .update(updatePayload)
             .eq('id', id)
-            .select('id, category, name, title, privacy, file_url, created_at, updated_at')
+            .select('id, category, name, title, privacy, file_url, created_at, updated_at, user_id')
             .single();
 
         if (error || !data) {
@@ -159,25 +167,31 @@ export async function DELETE(request: Request, { params }: Params) {
 
         const { data: existing } = await supabaseAdmin
             .from('inquire_board')
-            .select('password_hash, file_url')
+            .select('password_hash, file_url, user_id')
             .eq('id', id)
             .single();
 
         if (!admin) {
             const body = await request.json().catch(() => ({}));
-            const password = body.password ?? null;
 
-            if (!password) {
-                return NextResponse.json({ error: '비밀번호를 입력해 주세요.' }, { status: 400 });
-            }
+            // 로그인한 회원 본인이 작성한 글이면 비밀번호 검증 없이 삭제 가능
+            const isOwner = !!existing?.user_id && body.userId && existing.user_id === body.userId;
 
-            if (!existing) {
-                return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
-            }
+            if (!isOwner) {
+                const password = body.password ?? null;
 
-            const inputHash = crypto.createHash('sha256').update(password).digest('hex');
-            if (inputHash !== existing.password_hash) {
-                return NextResponse.json({ error: '비밀번호가 일치하지 않습니다.' }, { status: 401 });
+                if (!password) {
+                    return NextResponse.json({ error: '비밀번호를 입력해 주세요.' }, { status: 400 });
+                }
+
+                if (!existing) {
+                    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
+                }
+
+                const inputHash = crypto.createHash('sha256').update(password).digest('hex');
+                if (inputHash !== existing.password_hash) {
+                    return NextResponse.json({ error: '비밀번호가 일치하지 않습니다.' }, { status: 401 });
+                }
             }
         }
 

@@ -5,6 +5,7 @@ import InquireBoardForm from "@/components/form/InquireBoardForm";
 import PasswordForm from "@/components/form/PasswordForm";
 import Toast from "@/components/common/Toast";
 import InquireBoardUserForm from "@/components/form/InquireBoardUserForm";
+import { supabase } from "@/lib/supabase";
 
 interface InquireData {
     id: number;
@@ -15,6 +16,7 @@ interface InquireData {
     title: string;
     contents: string;
     privacy: boolean;
+    user_id: string | null;
 }
 
 export default function InquireEditPage() {
@@ -26,13 +28,17 @@ export default function InquireEditPage() {
     const [isPrivate, setIsPrivate] = useState(false);
     const [unlockedPassword, setUnlockedPassword] = useState("");
     const [vaild, setVaild] = useState<string | null>(null);
+    // 로그인한 유저 ID (회원 본인 글이면 비밀번호 없이 수정 가능하도록 서버에 함께 전달)
+    const [userId, setUserId] = useState<string | null>(null);
 
-    const fetchData = async (pw?: string) => {
+    const fetchData = async (pw?: string, currentUserId?: string | null) => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/inquire/board/${id}`, {
-                headers: pw ? { "X-Password": pw } : {},
-            });
+            const headers: Record<string, string> = {};
+            if (pw) headers["X-Password"] = pw;
+            if (currentUserId) headers["X-User-Id"] = currentUserId;
+
+            const res = await fetch(`/api/inquire/board-user/${id}`, { headers });
             const result = await res.json();
 
             if (result.error === "REQUIRED_PASSWORD") {
@@ -60,7 +66,13 @@ export default function InquireEditPage() {
     };
 
     useEffect(() => {
-        fetchData();
+        const init = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            const currentUserId = user?.id ?? null;
+            setUserId(currentUserId);
+            await fetchData(undefined, currentUserId);
+        };
+        init();
     }, [id]);
 
     const handlePasswordSubmit = (pw: string) => {
@@ -68,7 +80,7 @@ export default function InquireEditPage() {
             setVaild("비밀번호를 입력해주세요.");
             return;
         }
-        fetchData(pw);
+        fetchData(pw, userId);
     };
 
     if (loading) return <div className="loading">데이터를 불러오는 중입니다.</div>;
@@ -92,7 +104,7 @@ export default function InquireEditPage() {
         <article>
             <div>
                 {/* 비회원/회원 폼 */}
-                <InquireBoardUserForm 
+                <InquireBoardUserForm
                 editId={inquireData.id}
                     initialData={{
                         name: inquireData.name,
@@ -103,7 +115,8 @@ export default function InquireEditPage() {
                         contents: inquireData.contents,
                         privacy: inquireData.privacy,
                         password_hash: unlockedPassword,
-                    }}/>
+                    }}
+                    ownerUserId={inquireData.user_id}/>
 
                 {/* 로그인 무관 폼 */}
                 {/* <InquireBoardForm
