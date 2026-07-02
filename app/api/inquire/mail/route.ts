@@ -2,11 +2,24 @@ import { google } from "googleapis";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { Options } from "nodemailer/lib/mailer";
+import { buildMailHtml } from "@/lib/mailTemplate";
 
-// 메일 문의
-// npm install googleapis
-// npm install nodemailer
-// npm install -D @types/nodemailer
+/*
+[메일 문의]
+npm install googleapis
+npm install nodemailer
+npm install -D @types/nodemailer
+1. 라이브러리 - gmail api 사용하기
+2. https://developers.google.com/oauthplayground/ : refresh token 발급
+   -> 엑세스 토큰 인증 만료 문제 -> 리프래시 ㅅ토큰으로 사용자 재인증없이 보안 유지하면서 토큰을 발급
+   -> 백그라운드에서 주기석으로 Google API에 접근해야하는 서비스에 필수
+3. OAuth 2.0 playground > 설정 > Use your own OAuth credentials 옵션 체크
+4. scope 선택 > Authorize APIs > Exchange authorization code for tokens
+- gmail.send : 문의 폼이 들어왔을 때 메일을 발송하는 권한
+- 3단계 : POST / Request url: https://www.googleapis.com/gmail/v1/users/me/messages/send
+5. Redirect URL : https://developers.google.com/oauthplayground 추가
+ */
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -61,35 +74,21 @@ export async function POST(req: Request) {
       });
     }
 
+    const emailHtml = buildMailHtml({
+      title,
+      name,
+      phone,
+      email,
+      fax,
+      contents,
+    });
+
     // 메일 내용
     const mailOptions = {
       from: `000 문의 <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
       subject: `[신규 문의] ${name} 신규 문의가 접수 되었습니다.`,
-      html: `
-        <div style="padding: 20px 0;">
-            <div style="margin-top: 20px;">
-                <div style="margin-bottom: 100px;">
-                    <h2 style="margin-bottom: 8px; font-size: 1.7rem;">${title}</h2>
-                    <p style="font-size: 1.1rem">${contents}</p>
-                </div>
-                <ul style="width: 400px; list-style: none; padding: 0;">
-                    <li style="font-size: 1rem; padding: 20px 8px; border-bottom: 1px solid #ddd; border-top: 2px solid #034694;">
-                      <strong>회사명/이름 :</strong> <span style="color: #555;">${name}</span>
-                    </li>
-                    <li style="font-size: 1rem; padding: 20px 8px; border-bottom: 1px solid #ddd;">
-                      <strong>연락처 :</strong> <span style="color: #555;">${phone}</span>
-                    </li>
-                      <li style="font-size: 1rem; padding: 20px 8px; border-bottom: 1px solid #ddd;">
-                    <strong>이메일 :</strong> <span style="color: #555;">${email}</span>
-                    </li>
-                      <li style="font-size: 1rem; padding: 20px 8px; border-bottom: 1px solid #ddd;">
-                    <strong>팩스 :</strong> <span style="color: #555;">${fax ? fax : "-"}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-      `,
+      html: emailHtml,
       attachments: attachments.length > 0 ? attachments : undefined
     };
 

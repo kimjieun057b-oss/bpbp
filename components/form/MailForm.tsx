@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
+import Toast from "../common/Toast";
 
 interface MailFormProps {
     title: string; // 제목
@@ -18,6 +19,8 @@ export default function MailForm() {
 
     const router = useRouter();
     const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+    const [vaild, setVaild] = useState<string | null>(null);
+    const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
     const [form, setForm] = useState<MailFormProps>({
         title: "",
@@ -29,6 +32,14 @@ export default function MailForm() {
         file: null,
         privacy: false
     });
+
+    const handleCloseToast: Dispatch<SetStateAction<string | null>> = (value) => {
+            if (isSuccess && value === null) {
+                router.replace('/');
+                return;
+            }
+            setVaild(value);
+        };
 
     const onChangeForm = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -57,33 +68,33 @@ export default function MailForm() {
         if (submitLoading) return;
 
         if (!form.name.trim()) {
-            alert("회사명/이름 항목을 입력해주세요.")
+            setVaild("회사명/이름 항목을 입력해주세요.")
             return;
         }
         if (!form.phone.trim()) {
-            alert("연락처 항목을 입력해주세요.")
+            setVaild("연락처 항목을 입력해주세요.")
             return;
         }
         if (!/^[0-9]{10,11}$/.test(form.phone)) {
-            alert("연락처는 숫자만 10~11자리로 입력해주세요.")
+            setVaild("연락처는 숫자만 10~11자리로 입력해주세요.")
             return;
         }
 
         if (!form.email.trim()) {
-            alert("이메일 항목을 입력해주세요.")
+            setVaild("이메일 항목을 입력해주세요.")
             return;
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-            alert("올바른 이메일 양식을 입력해주세요.")
+            setVaild("올바른 이메일 양식을 입력해주세요.")
             return;
         }
 
         if (!form.contents.trim()) {
-            alert("문의내용을 입력해주세요.");
+            setVaild("문의내용을 입력해주세요.");
             return;
         }
 
         if (!form.privacy) {
-            alert("개인정보 수집 및 이용 동의를 해주세요.");
+            setVaild("개인정보 수집 및 이용 동의를 해주세요.");
             return
         }
 
@@ -91,7 +102,7 @@ export default function MailForm() {
             const ext = form.file.name.split('.').pop()?.toLowerCase() ?? "";
             const allowedExtensions = ["jpg", "jpeg"];
             if (!allowedExtensions.includes(ext)) {
-                alert("JPG 파일만 업로드 가능합니다.");
+                setVaild("JPG 파일만 업로드 가능합니다.");
                 return;
             }
         }
@@ -113,7 +124,7 @@ export default function MailForm() {
                 formData.append("file", form.file);
             }
 
-            const response = await fetch("/api/inquire", {
+            const response = await fetch("/api/inquire/mail", {
                 method: "POST",
                 body: formData,
             });
@@ -121,15 +132,15 @@ export default function MailForm() {
             const data = await response.json();
 
             if (data.success) {
-                alert("문의가 정상적으로 접수되었습니다.");
-                router.push("/");
+                setIsSuccess(true);
+                setVaild("문의가 정상적으로 접수되었습니다.");
             } else {
-                alert(`문의 발송 중 오류가 발생했습니다. 다시 시도해주세요.`);
+                setVaild(`문의 발송 중 오류가 발생했습니다. 다시 시도해주세요.`);
                 console.error(data.error);
             }
         } catch (error) {
             console.error(error);
-            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+            setVaild("서버 오류가 발생했습니다. 다시 시도해주세요.");
         } finally {
             setSubmitLoading(false);
         }
@@ -137,6 +148,7 @@ export default function MailForm() {
     }, [form, router]);
 
     return (
+        <>
         <form onSubmit={onSubmitForm}>
             <div className="card p-6 md:p-8 space-y-5">
                 <div className="flex flex-col gap-1.5">
@@ -190,5 +202,8 @@ export default function MailForm() {
                 <button type="submit" className="btn-primary w-full">{submitLoading ? "접수 중..." : "문의 접수하기"}</button>
             </div>
         </form>
+        <Toast vaild={vaild} setVaild={handleCloseToast}/>
+        </>
+        
     );
 }
