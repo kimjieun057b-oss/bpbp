@@ -35,7 +35,7 @@ export default function Header() {
     }, []);
 
     return (
-        <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+        <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-card">
             <div className="max-w-341.5 mx-auto px-5 pc:px-0 h-16 flex items-center justify-between">
 
                 <div>

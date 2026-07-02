@@ -1,12 +1,9 @@
-import InquireBoardList from "@/components/board/InquireBoardList";
-import InquireQuickList from "@/components/board/InquireQuickList";
+import Dashboard from "@/components/admin/Dashboard";
 
-export default function AdminInquirePage () {
+export default function AdminDashboardPage () {
     return (
         <div className="space-y-6">
-            <InquireBoardList/>
-            <hr className="border-gray-100"/>
-            <InquireQuickList/>
+            <Dashboard/>
         </div>
     )
 }

@@ -67,6 +67,12 @@
 | `.form-label` | 폼 라벨 공통 스타일 |
 | `.btn-primary` | 주요 제출 버튼 (bg-primary + white text) |
 | `.btn-ghost` | 보조 취소 버튼 (border + bg-white) |
+| `.btn-danger` | 삭제 등 위험 액션 버튼 (bg-red-50 + text-red-600) |
+| `.badge` | 뱃지 공통 베이스 (text-xs + rounded) |
+| `.badge-info` | 분류/비밀글 등 포인트 컬러 뱃지 (text-primary + bg-primary/10) |
+| `.badge-success` | 답변완료 등 긍정 상태 뱃지 (text-green-600 + bg-green-50) |
+| `.badge-warning` | 답변대기 등 대기 상태 뱃지 (text-amber-600 + bg-amber-50) |
+| `.badge-muted` | 비활성 정보 뱃지 (text-muted + bg-gray-100) |
 
 ### 카드 상단 포인트 패턴
 ```tsx

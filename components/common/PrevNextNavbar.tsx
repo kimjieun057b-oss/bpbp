@@ -19,10 +19,10 @@ export default function PrevNextNavbar({
     nextLabel = "다음 글",
 }: PrevNextNavbarProps) {
     return (
-        <div className="mt-6 border-t border-gray-200">
+        <div className="mt-6 border-t border-gray-100">
 
             {/* 다음 */}
-            <div className="border-b border-gray-200">
+            <div className="border-b border-gray-100">
                 {nextItem ? (
                     <Link
                         href={nextItem.href}
@@ -39,7 +39,7 @@ export default function PrevNextNavbar({
                 )}
             </div>
             {/* 이전 */}
-            <div className="border-b border-gray-200">
+            <div className="border-b border-gray-100">
                 {prevItem ? (
                     <Link
                         href={prevItem.href}

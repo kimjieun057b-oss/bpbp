@@ -91,49 +91,49 @@ export default function SolapiForm() {
 
     return (
         <form onSubmit={onSubmitForm}>
-            <div>
-                <label htmlFor="name"><h3 className="required">이름</h3></label>
-                <input type="text" id="name" name="name" placeholder="이름을 입력해주세요." onChange={onChangeForm} value={form.name} />
-            </div>
-
-            <div>
-                <legend><h3 className="required">연락처</h3></legend>
-                <div className="display-flex">
-                    <input type="text" inputMode="numeric" id="phoneFront" name="phoneFront" maxLength={3} onChange={onChangeForm} value={form.phoneFront} />
-                    <p>-</p>
-                    <input type="text" inputMode="numeric" id="phoneMiddle" name="phoneMiddle" maxLength={4} onChange={onChangeForm} value={form.phoneMiddle} />
-                    <p>-</p>
-                    <input type="text" inputMode="numeric" id="phoneLast" name="phoneLast" maxLength={4} onChange={onChangeForm} value={form.phoneLast} />
+            <div className="card p-6 md:p-8 space-y-5">
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="name" className="form-label">이름 <span className="text-red-400">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="이름을 입력해주세요." onChange={onChangeForm} value={form.name} className="form-input" />
                 </div>
-            </div>
 
-            <div>
-                <label htmlFor="request"><h3>문의 내용</h3></label>
-                <textarea id="request" name="request" rows={10} placeholder="문의 내용을 입력해주세요." onChange={onChangeForm} value={form.request} />
-            </div>
-
-            <div>
-                <label htmlFor=""><h3>개인 정보 수집 및 이용 동의</h3></label>
-                <div>
-                    <p>아래의 개인 정보를 수집하며, 상담 외 다른 목적으로 사용되지 않습니다.</p>
-                    <ul>
-                        <li>- 수집 항목 : 이름, 전화번호, 문의 내용</li>
-                        <li>- 수집 및 이용 목적 : 가맹 문의 상담 및 고객 응대</li>
-                        <li>- 보유 기간 : 문의일로부터 1년간 보관 후 즉시 파기</li>
-                        <li>- 수집 방법 : 홈페이지 문의 접수</li>
-                    </ul>
-                    <p>접수된 문의 내용은 SMS 발송을 통해 [00000] 담당자에게 실시간 전달됩니다.</p>
-                    <p>개인정보 수집에 동의하지 않으실 경우, 가맹 상담 서비스 제공이 제한될 수 있습니다.</p>
+                <div className="flex flex-col gap-1.5">
+                    <span className="form-label">연락처 <span className="text-red-400">*</span></span>
+                    <div className="flex items-center gap-2">
+                        <input type="text" inputMode="numeric" id="phoneFront" name="phoneFront" maxLength={3} onChange={onChangeForm} value={form.phoneFront} className="form-input text-center" />
+                        <span className="text-muted">-</span>
+                        <input type="text" inputMode="numeric" id="phoneMiddle" name="phoneMiddle" maxLength={4} onChange={onChangeForm} value={form.phoneMiddle} className="form-input text-center" />
+                        <span className="text-muted">-</span>
+                        <input type="text" inputMode="numeric" id="phoneLast" name="phoneLast" maxLength={4} onChange={onChangeForm} value={form.phoneLast} className="form-input text-center" />
+                    </div>
                 </div>
-                <div className="display-flex">
-                    <input type="checkbox" id="privacy" name="privacy" checked={form.privacy} onChange={onChangeForm} />
-                    <label htmlFor="privacy"></label>
-                    <p>개인 정보 수집 및 이용에 동의합니다.</p>
+
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="request" className="form-label">문의 내용</label>
+                    <textarea id="request" name="request" rows={10} placeholder="문의 내용을 입력해주세요." onChange={onChangeForm} value={form.request} className="form-input" />
                 </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="form-label">개인 정보 수집 및 이용 동의</label>
+                    <div className="text-xs text-muted bg-surface rounded-lg p-3 space-y-1">
+                        <p>아래의 개인 정보를 수집하며, 상담 외 다른 목적으로 사용되지 않습니다.</p>
+                        <ul className="space-y-0.5">
+                            <li>- 수집 항목 : 이름, 전화번호, 문의 내용</li>
+                            <li>- 수집 및 이용 목적 : 가맹 문의 상담 및 고객 응대</li>
+                            <li>- 보유 기간 : 문의일로부터 1년간 보관 후 즉시 파기</li>
+                            <li>- 수집 방법 : 홈페이지 문의 접수</li>
+                        </ul>
+                        <p>접수된 문의 내용은 SMS 발송을 통해 [00000] 담당자에게 실시간 전달됩니다.</p>
+                        <p>개인정보 수집에 동의하지 않으실 경우, 가맹 상담 서비스 제공이 제한될 수 있습니다.</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <input type="checkbox" id="privacy" name="privacy" checked={form.privacy} onChange={onChangeForm} className="w-4 h-4 accent-primary cursor-pointer" />
+                        <label htmlFor="privacy" className="text-sm text-body cursor-pointer">개인 정보 수집 및 이용에 동의합니다.</label>
+                    </div>
+                </div>
+
+                <button type="submit" className="btn-primary w-full">문의 접수하기</button>
             </div>
-
-            <button type="submit">문의 접수하기</button>
-
         </form>
     );
 }

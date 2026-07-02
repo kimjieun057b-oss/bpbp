@@ -205,11 +205,11 @@ export default function InquireDetailUser() {
                         {/* 제목 / 메타 */}
                         <div className="px-6 py-6 border-b border-gray-100">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="text-xs font-medium text-primary bg-blue-50 px-2 py-0.5 rounded">
+                                <span className="badge badge-info">
                                     {detail.category}
                                 </span>
                                 {detail.privacy && (
-                                    <span className="text-xs font-medium text-muted bg-gray-100 px-2 py-0.5 rounded">
+                                    <span className="badge badge-muted">
                                         비밀글
                                     </span>
                                 )}
@@ -264,7 +264,7 @@ export default function InquireDetailUser() {
                                         type="button"
                                         onClick={() => { setShowDeleteConfirm(true); setDeletePassword(""); }}
                                         disabled={deleteLoading}
-                                        className="text-xs px-4 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-50 cursor-pointer"
+                                        className="btn-danger"
                                     >
                                         {deleteLoading ? "삭제 중" : "삭제"}
                                     </button>

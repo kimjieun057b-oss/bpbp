@@ -18,26 +18,7 @@ interface InquireBoardFormOwnProps {
 // 비회원, 회원 상관없이 문의남김 - 비밀글 (비밀번호)
 // 만약에 회원이 문의를 남기면, 회원정보를 가져와서 이메일을 자동으로 채워주고,이름도 자동으로 채워준다. 
 // 비밀번호는 직접 입력해야함
-// 회원이 남긴 문의는 비밀번호 없이 회원이 조회 가능 (수정/삭제 시에도 비밀번호 인증 X), 비회원이 남긴 문의는 비밀번호를 입력해야 조회 가능
-
-// [ 26.07.01 진행중 ]
-
-// 2. 기능 검수
-// - 여전히 회원일때 자기 글은 비번 인증후 문의 확인이 가능함 (문의게시판에서)
-// - 어드민 공지사항 관리 조회, detail, 수정, 삭제 등 이전거 비교;; (다른것들도)
-// - detail : 로그인 : ui 정리, 비번찾기, 소셜 로그인, 이메일로회원가입, 로그인, 관리자 로그인 링크 / 그외 추가사항 중 ui 안맞는거 수정
-// api/mypage 추가
-// 실제 탈퇴, 유저데이터 삭제, 비밀번호 재설정 되도록 ui 만들기
-// 비밀번호를 잊으셨나요? 구현
-// 3. social login - google error 확인, kakao 추가
-
-// 1. Supabase 대시보드에서 직접 확인/설정하셔야 하는 것
-// Authentication > URL Configuration > Redirect URLs: <사이트 주소>/auth/callback이 등록되어 있는지 확인 (/api/auth/callback이 등록돼 있었다면 그건 이제 안 씀 — 지우고 새 경로로 교체).
-// Authentication > Providers > Google: Client ID/Secret이 설정돼 있는지, Google Cloud Console의 OAuth 클라이언트 리다이렉트 URI에 https://<project-ref>.supabase.co/auth/v1/callback이 등록돼 있는지 확인.
-// Authentication > Providers > Kakao: 이번에 추가한 기능이 동작하려면 여기서 Provider를 활성화하고 Kakao REST API 키 + Client Secret을 입력해야 합니다. Kakao Developers 콘솔에서도 앱을 만들어 Redirect URI에 https://<project-ref>.supabase.co/auth/v1/callback을 등록하고 "카카오 로그인" 활성화 + 이메일 동의항목을 설정해야 합니다 (이메일 scope는 카카오 비즈니스 앱 전환이 필요할 수 있습니다).
-// inquire_board.user_id 컬럼: 이번 수정으로 앱 코드가 삭제를 직접 책임지긴 하지만, 혹시 다른 테이블에도 user_id를 참조하는 컬럼이 있다면(예: 장바구니, 프로필 등) 같은 방식으로 탈퇴 시 정리가 필요한지 한 번 점검해 보시는 게 좋습니다.
-
-
+// 회원이 남긴 문의는 비밀번호 없이 회원이 조회 가능 (수정 시에도 비밀번호 인증 X)
 export default function InquireBoardUserForm({ editId, initialData, ownerUserId }: InquireBoardFormOwnProps = {}) {
     const isEditMode = !!editId;
 

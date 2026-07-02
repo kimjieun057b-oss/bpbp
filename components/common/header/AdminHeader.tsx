@@ -3,7 +3,7 @@ import LogoutButton from "../LogoutButton";
 
 export default function AdminHeader() {
     return (
-        <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+        <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-card">
             <div className="px-6 h-14 flex items-center justify-between">
                 <h3 className="text-sm font-bold">
                     <Link href="/admin" className="text-title hover:text-primary">ADMIN</Link>

@@ -73,7 +73,7 @@ export default async function Dashboard() {
                                             </span>
                                         )}
                                     </span>
-                                    <span className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded ${item.is_answered ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                                    <span className={`badge ${item.is_answered ? 'badge-success' : 'badge-warning'}`}>
                                         {item.is_answered ? '답변완료' : '답변대기'}
                                     </span>
                                 </Link>

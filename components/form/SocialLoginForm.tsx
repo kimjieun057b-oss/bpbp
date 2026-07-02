@@ -1,42 +1,43 @@
 "use client";
 import { signInWithGoogle, signInWithKakao } from "@/lib/social-auth";
 import { useState } from "react";
-export default function SocialLoginForm() {
-    // 3. Social login (supabase auth)
 
-    const [loading, setLoading] = useState(false);
+export default function SocialLoginForm() {
+    // Social login (supabase auth)
+
+    const [googleLoading, setGoogleLoading] = useState(false);
+    const [kakaoLoading, setKakaoLoading] = useState(false);
 
     const onClickGoogleLogin = async () => {
         try {
-            setLoading(true);
+            setGoogleLoading(true);
             await signInWithGoogle();
         } catch (error) {
             alert("구글 로그인에 실패했습니다. 다시 시도해주세요.");
-            setLoading(false);
+            setGoogleLoading(false);
         }
     }
 
     const onClickKakaoLogin = async () => {
         try {
-            setLoading(true);
+            setKakaoLoading(true);
             await signInWithKakao();
         } catch (error) {
             alert("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
-            setLoading(false);
+            setKakaoLoading(false);
         }
     }
 
+    const disabled = googleLoading || kakaoLoading;
+
     return (
-        <div className="flex gap-2">
-            <button type="button" onClick={onClickGoogleLogin} disabled={loading}>
-                {loading ? "Logging in..." : "Google login"}
+        <div className="flex flex-col gap-2">
+            <button type="button" onClick={onClickGoogleLogin} disabled={disabled} className="btn-ghost w-full text-center text-sm">
+                {googleLoading ? "Logging in..." : "Google login"}
             </button>
-            <button type="button" onClick={onClickKakaoLogin} disabled={loading}>
-                {loading ? "Logging in..." : "Kakao login"}
+            <button type="button" onClick={onClickKakaoLogin} disabled={disabled} className="btn-ghost w-full text-center text-sm">
+                {kakaoLoading ? "Logging in..." : "Kakao login"}
             </button>
         </div>
     )
-
-    // google login : google cloude 인증 플랫폼 -> OAuth 2.0 클라이언트 ID 발급 -> supabase auth 설정, supabase authentication > URL Configuration의 Redirect URLs에서 .../auth/callback 추가 -> supabase auth 로그인 로직 구현
-    // kakao login : kakao developers -> 앱 생성 -> 플랫폼 설정 -> redirect uri 설정 -> supabase auth 설정 -> supabase auth 로그인 로직 구현 (https://jun-coding.tistory.com/770 참고)
 }

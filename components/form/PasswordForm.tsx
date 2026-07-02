@@ -6,6 +6,7 @@ interface PasswordFormProps {
     loading?: boolean;
 }
 
+// 문의글 비밀번호 입력
 export default function PasswordForm({ onSubmit, loading = false }: PasswordFormProps) {
     const [password, setPassword] = useState<string>("");
 

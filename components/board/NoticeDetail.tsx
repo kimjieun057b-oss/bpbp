@@ -148,7 +148,7 @@ export default function NoticeDetail() {
                               type="button"
                               onClick={handleDelete}
                               disabled={deleteLoading}
-                              className="text-xs px-4 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-50 cursor-pointer"
+                              className="btn-danger"
                            >
                               {deleteLoading ? "삭제 중" : "삭제"}
                            </button>
@@ -157,7 +157,7 @@ export default function NoticeDetail() {
                   </div>
                </div>
 
-               <PrevNextNavbar2
+               <PrevNextNavbar
                   prevLabel="이전 공지"
                   nextLabel="다음 공지"
                   prevItem={adjacent.prev ? { href: `/notice/${adjacent.prev.id}`, title: adjacent.prev.title } : null}

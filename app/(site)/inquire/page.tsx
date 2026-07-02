@@ -5,11 +5,11 @@ export default function InquireBoardPage () {
     return (
         <article>
             <div>
-                <div>
+                <div className="flex items-center justify-between mb-4">
                     <h2>문의게시판</h2>
+                    <Link href="/inquire/write" className="btn-primary">문의하기</Link>
                 </div>
                 <InquireBoardList/>
-                <button><Link href="/inquire/write">문의하기</Link></button>
             </div>
         </article>
     )

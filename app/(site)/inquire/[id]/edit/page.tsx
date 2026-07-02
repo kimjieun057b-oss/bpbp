@@ -103,7 +103,7 @@ export default function InquireEditPage() {
     return (
         <article>
             <div>
-                {/* 비회원/회원 폼 */}
+                {/* 비회원/회원 폼 - 로그인했을때 내 문의 저장 */}
                 <InquireBoardUserForm
                 editId={inquireData.id}
                     initialData={{

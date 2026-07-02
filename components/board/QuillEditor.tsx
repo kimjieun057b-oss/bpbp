@@ -17,7 +17,7 @@ import { QuillEditorProps } from '@/types/type';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), {
     ssr: false,
-    loading: () => <div className="w-full h-98.5 bg-gray-100 rounded-md animate-pulse" />
+    loading: () => <div className="w-full h-98.5 bg-surface rounded-lg animate-pulse" />
 })
 
 // 여러 CRUD 게시판(공지사항/문의 등)에서 공용으로 사용하기 위해

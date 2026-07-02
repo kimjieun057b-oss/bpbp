@@ -16,6 +16,14 @@ interface InquireBoardItem {
 }
 
 const ITEMS_PER_PAGE = 8;
+const MAX_MASK_LENGTH = 3;
+
+// 문의자 이름 개인정보 보호 - 첫 글자만 노출하고 나머지는 최대 3개까지 * 처리 (예: 홍길동 -> 홍**)
+function maskName(name: string) {
+    if (name.length <= 1) return name;
+    const maskCount = Math.min(name.length - 1, MAX_MASK_LENGTH);
+    return name[0] + '*'.repeat(maskCount);
+}
 
 export default function InquireBoardList() {
     const [inquire, setInquire] = useState<InquireBoardItem[]>([]);
@@ -51,7 +59,7 @@ export default function InquireBoardList() {
                             className="flex items-center gap-4 px-5 py-4 hover:bg-surface transition-colors"
                         >
                             {item.privacy && (
-                                <span className="shrink-0 text-xs font-medium text-primary bg-blue-50 px-2 py-0.5 rounded">
+                                <span className="badge badge-info">
                                     비밀글
                                 </span>
                             )}
@@ -63,8 +71,8 @@ export default function InquireBoardList() {
                                     </span>
                                 )}
                             </span>
-                            <span className="text-xs text-muted shrink-0 hidden sm:block">{item.name}</span>
-                            <span className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded ${item.is_answered ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                            <span className="text-xs text-muted shrink-0 hidden sm:block">{maskName(item.name)}</span>
+                            <span className={`badge ${item.is_answered ? 'badge-success' : 'badge-warning'}`}>
                                 {item.is_answered ? '답변완료' : '답변대기'}
                             </span>
                             <span className="text-xs text-muted shrink-0">

@@ -61,7 +61,7 @@ export default function MyInquireList() {
                             className="flex items-center gap-4 px-5 py-4 hover:bg-surface transition-colors"
                         >
                             {item.privacy && (
-                                <span className="shrink-0 text-xs font-medium text-primary bg-blue-50 px-2 py-0.5 rounded">
+                                <span className="badge badge-info">
                                     비밀글
                                 </span>
                             )}
@@ -73,7 +73,7 @@ export default function MyInquireList() {
                                     </span>
                                 )}
                             </span>
-                            <span className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded ${item.is_answered ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                            <span className={`badge ${item.is_answered ? 'badge-success' : 'badge-warning'}`}>
                                 {item.is_answered ? '답변완료' : '답변대기'}
                             </span>
                             <span className="text-xs text-muted shrink-0">

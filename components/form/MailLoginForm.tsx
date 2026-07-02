@@ -1,17 +1,47 @@
 "use client";
 import { useCallback, useState } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import Toast from "../common/Toast";
 import SocialLoginForm from "./SocialLoginForm";
 
-type Mode = "login" | "signup";
-
+// 이메일 로그인 (supabase auth)
 export default function MailLoginForm() {
-    const [mode, setMode] = useState<Mode>("login");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [vaild, setVaild] = useState<string | null>(null);
+
+    // 비밀번호 재설정 (이메일로 재설정 링크 발송)
+    const [showReset, setShowReset] = useState(false);
+    const [resetEmail, setResetEmail] = useState("");
+    const [resetLoading, setResetLoading] = useState(false);
+
+    const onSubmitReset = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (resetLoading) return;
+
+        if (!resetEmail.trim()) {
+            setVaild("이메일을 입력해주세요.");
+            return;
+        }
+
+        try {
+            setResetLoading(true);
+            const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+                redirectTo: `${window.location.origin}/auth/reset-password`,
+            });
+            if (error) throw new Error(error.message);
+
+            setVaild("비밀번호 재설정 링크를 이메일로 보냈습니다. 메일함을 확인해주세요.");
+            setShowReset(false);
+            setResetEmail("");
+        } catch (err: any) {
+            setVaild(err.message || "재설정 메일 발송에 실패했습니다.");
+        } finally {
+            setResetLoading(false);
+        }
+    }, [resetEmail, resetLoading]);
 
     const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -29,26 +59,51 @@ export default function MailLoginForm() {
         try {
             setLoading(true);
 
-            if (mode === "signup") {
-                const { error } = await supabase.auth.signUp({ email, password });
-                if (error) throw new Error(error.message);
-                // supabase dashboard > Authenitication > Providers > Email > confirm email 활성화
-                setVaild("가입 확인 이메일이 발송되었습니다. 이메일을 확인해주세요.");
-            } else {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw new Error(error.message);
-                window.location.href = '/';
-            }
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw new Error(error.message);
+            window.location.href = '/';
         } catch (err: any) {
             if (err.message === "Invalid login credentials") {
-                    setVaild("가입되지 않은 이메일이거나 비밀번호가 올바르지 않습니다.");
-                } else {
-                    setVaild(err.message);
-                }
+                setVaild("가입되지 않은 이메일이거나 비밀번호가 올바르지 않습니다.");
+            } else {
+                setVaild(err.message);
+            }
         } finally {
             setLoading(false);
         }
-    }, [email, password, loading, mode]);
+    }, [email, password, loading]);
+
+    if (showReset) {
+        return (
+            <>
+                <form onSubmit={onSubmitReset} className="space-y-4">
+                    <div>
+                        <label htmlFor="resetEmail" className="form-label">이메일</label>
+                        <input
+                            type="email"
+                            id="resetEmail"
+                            name="resetEmail"
+                            placeholder="가입한 이메일을 입력해주세요"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            className="form-input"
+                        />
+                    </div>
+                    <button type="submit"
+                        disabled={resetLoading}
+                        className="btn-primary w-full">
+                        {resetLoading ? "발송 중..." : "재설정 링크 보내기"}
+                    </button>
+                    <button type="button"
+                        onClick={() => setShowReset(false)}
+                        className="btn-ghost w-full text-center">
+                        로그인으로 돌아가기
+                    </button>
+                </form>
+                <Toast vaild={vaild} setVaild={setVaild} />
+            </>
+        );
+    }
 
     return (
         <>
@@ -77,29 +132,21 @@ export default function MailLoginForm() {
                         className="form-input"
                     />
                 </div>
-                <p>비밀번호를 잊으셨나요?</p>
+                <button type="button"
+                    onClick={() => setShowReset(true)}
+                    className="text-xs text-muted hover:text-primary transition-colors">
+                    비밀번호를 잊으셨나요?
+                </button>
+                <button type="submit"
+                    disabled={loading}
+                    className="btn-primary w-full">
+                    {loading ? "처리 중..." : "로그인"}
+                </button>
                 {/* 소셜 로그인 */}
-                <SocialLoginForm/>
-                <div className="flex gap-3 pt-2 border-t border-gray-100">
-                    <button type="button"
-                        onClick={() => 
-                            {
-                                setMode(mode === "login" ? "signup" : "login");
-                                setEmail("");
-                                setPassword("");
-                        }} className="btn-ghost flex-1 text-center">
-                        {mode === "login" ?
-                            "이메일로 회원가입"
-                            : "로그인으로 돌아가기"}
-                    </button>
-                    <button type="submit"
-                        disabled={loading}
-                        className="btn-primary flex-1">
-                        {loading ? "처리 중..." :
-                            mode === "login" ? "로그인"
-                                : "회원가입"}
-                    </button>
-                </div>
+                <SocialLoginForm />
+                <Link href="/join" className="btn-ghost w-full text-center block">
+                    이메일로 회원가입
+                </Link>
             </form>
             <Toast vaild={vaild} setVaild={setVaild} />
         </>

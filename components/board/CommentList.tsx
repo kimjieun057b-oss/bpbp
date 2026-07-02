@@ -51,12 +51,12 @@ export default function CommentList({ inquireId, isAdmin, refreshKey }: CommentL
             {comments.map((c) => (
                 <li
                     key={c.id}
-                    className={`card p-4 ${c.is_admin ? 'border-l-2 border-l-primary bg-blue-50/40' : ''}`}
+                    className={`card p-4 ${c.is_admin ? 'border-l-2 border-l-primary bg-primary/5' : ''}`}
                 >
                     <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                             {c.is_admin && (
-                                <span className="inline-block text-[10px] font-semibold text-primary bg-blue-100 px-1.5 py-0.5 rounded mb-1">
+                                <span className="inline-block text-[10px] font-semibold text-primary bg-primary/15 px-1.5 py-0.5 rounded mb-1">
                                     관리자 답변
                                 </span>
                             )}
