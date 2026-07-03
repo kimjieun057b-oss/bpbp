@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePagination } from "@/hooks/usePagination";
+import { maskName } from "@/lib/maskName";
 import Pagination from "../common/Pagination";
 
 interface InquireBoardItem {
@@ -16,14 +17,6 @@ interface InquireBoardItem {
 }
 
 const ITEMS_PER_PAGE = 8;
-const MAX_MASK_LENGTH = 3;
-
-// 문의자 이름 개인정보 보호 - 첫 글자만 노출하고 나머지는 최대 3개까지 * 처리 (예: 홍길동 -> 홍**)
-function maskName(name: string) {
-    if (name.length <= 1) return name;
-    const maskCount = Math.min(name.length - 1, MAX_MASK_LENGTH);
-    return name[0] + '*'.repeat(maskCount);
-}
 
 export default function InquireBoardList() {
     const [inquire, setInquire] = useState<InquireBoardItem[]>([]);
