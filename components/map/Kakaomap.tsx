@@ -5,7 +5,7 @@ import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
 // https://apis.map.kakao.com/web/guide/
 // npm install react-kakao-maps-sdk
 // npm install kakao.maps.d.ts --save-dev
-// 실제 등록된 도메인에서만 지도 렌더링 가능...
+// 실제 등록된 도메인에서만 지도 렌더링 가능, 1앱 1서비스만 가능 (모던레지던스 때문에 안됨)
 export default function Kakaomap() {
     const [loading, error] = useKakaoLoader({
         appkey: process.env.NEXT_PUBLIC_KAKAOMAP_KEY!,
