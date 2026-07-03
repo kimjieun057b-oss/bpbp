@@ -183,13 +183,7 @@ export default function MailForm() {
                 <div className="flex flex-col gap-2">
                     <label className="form-label">개인정보처리방침안내 <span className="text-red-400">*</span></label>
                     <div className="text-xs text-muted bg-surface rounded-lg p-3 space-y-1">
-                        <p>00000은 고객님을 위한 개인정보 처리방침을 다음과 같이 알려드립니다.<br />아래의 개인 정보를 수집하며, 상담 외 다른 목적으로 사용되지 않습니다.</p>
-                        <ul className="space-y-0.5">
-                            <li>⦁ 수집 항목 : 회사명, 이름, 연락처, 이메일, 문의 내용</li>
-                            <li>⦁ 수집 및 이용 목적 : 문의 상담 및 고객 응대</li>
-                            <li>⦁ 보유 기간 : 문의일로부터 1년간 보관 후 즉시 파기</li>
-                            <li>⦁ 수집 방법 : 홈페이지 문의 접수</li>
-                        </ul>
+                        <p>고객님을 위한 개인정보 처리방침을 다음과 같이 알려드립니다.<br />아래의 개인 정보를 수집하며, 상담 외 다른 목적으로 사용되지 않습니다.</p>
                         <p>접수 완료 후, 빠른 시일 내에 연락 드리겠습니다.</p>
                         <p>개인정보 수집에 동의하지 않으실 경우, 상담 서비스 제공이 제한될 수 있습니다.</p>
                     </div>

@@ -1,10 +1,13 @@
+import MailForm from "@/components/form/MailForm";
+
 export default function ServiceBPage() {
 
     return (
         <article>
             <div>
+                <div>메일문의</div>
                 <div>
-                    <h2>Service B</h2>
+                    <MailForm />
                 </div>
             </div>
         </article>

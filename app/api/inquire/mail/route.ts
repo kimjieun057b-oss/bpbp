@@ -18,6 +18,8 @@ npm install -D @types/nodemailer
 - gmail.send : 문의 폼이 들어왔을 때 메일을 발송하는 권한
 - 3단계 : POST / Request url: https://www.googleapis.com/gmail/v1/users/me/messages/send
 5. Redirect URL : https://developers.google.com/oauthplayground 추가
+
+진행중 : 메일 오류 / + 메일 문의 리스트 DB (상세조회 필요없음, 신규문의가 들어왔다는 표시정도, 컬럼: 날짜, 배지, 이메일, 확인했으면 배지 수동 변경)
  */
 
 export async function POST(req: Request) {

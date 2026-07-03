@@ -27,7 +27,6 @@ export const signInWithGoogle = async () => {
   }
 };
 
-// [ 진행중 : 10줄 참고해서 리다이렉트 url 등록하기 ]
 export const signInWithKakao = async () => {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -70,6 +69,7 @@ export const signInWithKakao = async () => {
 
   1. kakao developers > 앱실행 > 플랫폼 설정 > Redirect URL 설정
   2. supabase 설정
+  3. 1앱 1서비스라 사용 못함..!
 
 */
 

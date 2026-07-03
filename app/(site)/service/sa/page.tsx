@@ -9,7 +9,7 @@ export default function ServiceAPage() {
                 <div>
                     <h2>Service A</h2>
                 </div>
-                <div>
+                <div style={{ width: "100%", height: "500px" }}>
                     <Kakaomap/>
                 </div>
             </div>
