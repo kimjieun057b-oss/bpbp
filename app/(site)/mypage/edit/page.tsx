@@ -10,6 +10,7 @@ export default function EditProfilePage() {
 
     const [userId, setUserId] = useState<string | null>(null);
     const [userName, setUserName] = useState("");
+    const [userPhone, setUserPhone] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -19,6 +20,7 @@ export default function EditProfilePage() {
                 if (user) {
                     setUserId(user.id);
                     setUserName(user.user_metadata?.name || user.user_metadata?.full_name || "");
+                    setUserPhone(user.user_metadata?.phone || "");
                 }
             } finally {
                 setLoading(false);
@@ -45,6 +47,7 @@ export default function EditProfilePage() {
                 <ProfileEditForm
                     userId={userId}
                     currentName={userName}
+                    currentPhone={userPhone}
                     onSuccess={handleSuccess}
                     onCancel={() => router.push('/mypage')}
                 />

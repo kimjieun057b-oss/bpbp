@@ -39,6 +39,14 @@ export interface NoticeListProps {
     created_at: string;
 }
 
+export interface QuickFormProps {
+    name: string,
+    phoneFront: string;
+    phoneMiddle: string;
+    phoneLast: string;
+    privacy: boolean
+}
+
 // 여러 게시판(공지사항/문의 등)에서 공용으로 사용하는 QuillEditor 컴포넌트의 props
 export interface QuillEditorProps {
     value: string;

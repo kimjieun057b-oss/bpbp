@@ -10,7 +10,7 @@ export const USER_CATEGORY : { [key: string]: { title: string; categories?: {nam
     reservation: {
         title:"RESERVATION",
         categories: [
-            {name: "calendar", url: "calendar"},
+            {name: "check", url: "check"},
             {name: "register", url: "register"},
         ],
     },

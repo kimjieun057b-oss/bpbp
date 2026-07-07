@@ -5,15 +5,18 @@ import Toast from "../common/Toast";
 interface ProfileEditFormProps {
     userId: string;
     currentName: string;
+    currentPhone: string;
     onSuccess: () => void;
     onCancel: () => void;
 }
 
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+const PHONE_REGEX = /^[0-9]{10,11}$/;
 
-// 마이페이지 - 회원정보(이름 / 비밀번호) 수정
-export default function ProfileEditForm({ userId, currentName, onSuccess, onCancel }: ProfileEditFormProps) {
+// 마이페이지 - 회원정보(이름 / 연락처 / 비밀번호) 수정
+export default function ProfileEditForm({ userId, currentName, currentPhone, onSuccess, onCancel }: ProfileEditFormProps) {
     const [name, setName] = useState(currentName);
+    const [phone, setPhone] = useState(currentPhone);
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [loading, setLoading] = useState(false);
@@ -37,6 +40,11 @@ export default function ProfileEditForm({ userId, currentName, onSuccess, onCanc
             setVaild("이름을 입력해주세요.");
             return;
         }
+        // 연락처는 선택 입력이므로, 값이 있을 때만 형식을 검증한다.
+        if (phone && !PHONE_REGEX.test(phone)) {
+            setVaild("연락처는 숫자만 10~11자리로 입력해주세요.");
+            return;
+        }
         // 비밀번호는 선택 입력이므로, 값이 있을 때만 형식을 검증한다.
         if (password && !PASSWORD_REGEX.test(password)) {
             setVaild("비밀번호는 8자 이상이어야 하며, 영문과 숫자를 모두 포함해야 합니다.");
@@ -56,6 +64,7 @@ export default function ProfileEditForm({ userId, currentName, onSuccess, onCanc
                 body: JSON.stringify({
                     userId,
                     name: name.trim(),
+                    phone: phone.trim() || undefined,
                     password: password.trim() || undefined,
                 }),
             });
@@ -70,7 +79,7 @@ export default function ProfileEditForm({ userId, currentName, onSuccess, onCanc
         } finally {
             setLoading(false);
         }
-    }, [name, password, passwordConfirm, userId, loading]);
+    }, [name, phone, password, passwordConfirm, userId, loading]);
 
     return (
         <>
@@ -83,6 +92,19 @@ export default function ProfileEditForm({ userId, currentName, onSuccess, onCanc
                         name="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        className="form-input"
+                    />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="phone" className="form-label">연락처</label>
+                    <input
+                        type="text"
+                        inputMode="numeric"
+                        id="phone"
+                        name="phone"
+                        placeholder="연락처를 입력해주세요. (숫자만)"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                         className="form-input"
                     />
                 </div>
