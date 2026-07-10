@@ -7,8 +7,8 @@ export default function LoginPage () {
         <article>
             <div>
               <div>
-                <h2>LOGIN</h2>
-                <p>로그인</p>
+                {/* <h2>-</h2>
+                <p>로그인</p> */}
               </div>
               <div>
                 {/* 유저 이메일 */}

@@ -6,7 +6,7 @@ export default function InquireWritePage () {
         <article>
             <div>
                 <div>
-                    <h2>문의하기</h2>
+                    {/* <h2>문의하기</h2> */}
                 </div>
                 {/* 비회원/회원 폼 */}
                 <InquireBoardUserForm/>

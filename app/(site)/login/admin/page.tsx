@@ -7,8 +7,8 @@ export default function AdminLoginPage () {
         <article>
             <div>
               <div>
-                <h2>ADMIN LOGIN</h2>
-                <p>관리자 로그인</p>
+                {/* <h2>ADMIN LOGIN</h2>
+                <p>관리자 로그인</p> */}
               </div>
               <div>
                 <NomalLoginForm/>

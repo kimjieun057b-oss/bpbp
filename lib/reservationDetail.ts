@@ -1,3 +1,5 @@
+import { resolveReservationStatus, ReservationStatus } from "./reservationStatus";
+
 export interface ReservationDetail {
     id: string;
     room_name: string;
@@ -8,24 +10,12 @@ export interface ReservationDetail {
     total_price: number;
     name: string;
     phone: string;
-    status: "confirmed" | "pending" | "cancelled";
+    status: ReservationStatus;
     created_at: string;
 }
 
-export const STATUS_LABEL: Record<ReservationDetail["status"], string> = {
-    confirmed: "예약 확정",
-    pending: "확인 중",
-    cancelled: "예약 취소",
-};
-
-export const STATUS_BADGE_CLASS: Record<ReservationDetail["status"], string> = {
-    confirmed: "badge-success",
-    pending: "badge-warning",
-    cancelled: "badge-muted",
-};
-
 export const BOOKING_DETAIL_SELECT =
-    'id, check_in, check_out, extra_people, options, total_price, name, phone, status, created_at, rooms(name)';
+    'id, status, check_in, check_out, extra_people, options, total_price, name, phone, check_status, created_at, rooms(name)';
 
 export function mapBookingRow(row: any): ReservationDetail {
     return {
@@ -38,7 +28,7 @@ export function mapBookingRow(row: any): ReservationDetail {
         total_price: row.total_price,
         name: row.name,
         phone: row.phone,
-        status: row.status,
+        status: resolveReservationStatus(row.status, row.check_status),
         created_at: row.created_at,
     };
 }

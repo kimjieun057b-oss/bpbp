@@ -42,7 +42,7 @@ export default function EditProfilePage() {
         <article>
             <div>
                 <div>
-                    <h2>회원정보 수정</h2>
+                    {/* <h2>회원정보 수정</h2> */}
                 </div>
                 <ProfileEditForm
                     userId={userId}

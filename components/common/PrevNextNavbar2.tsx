@@ -24,7 +24,7 @@ export default function PrevNextNavbar2({
             {prevItem ?
             <Link
                 href={prevItem.href}
-                className="group flex-1 bg-white rounded-lg border border-gray-100 p-5 flex flex-col gap-3 hover:border-primary transition-colors"
+                className="group flex-1 card p-5 flex flex-col gap-3 hover:border-primary transition-colors"
             >
                 <span className="text-sm text-muted group-hover:text-primary transition-colors">
                     {prevLabel}
@@ -37,7 +37,7 @@ export default function PrevNextNavbar2({
                 </span>
             </Link> :
             <div
-                className="group flex-1 bg-white rounded-lg border border-gray-100 p-5 flex flex-col gap-3 hover:border-primary transition-colors"
+                className="group flex-1 card p-5 flex flex-col gap-3 hover:border-primary transition-colors"
             >
                 <span className="text-sm text-muted group-hover:text-primary transition-colors">
                     {prevLabel}
@@ -55,7 +55,7 @@ export default function PrevNextNavbar2({
             {nextItem ?
             <Link
                 href={nextItem.href}
-                className="group flex-1 bg-white rounded-lg border border-gray-100 p-5 flex flex-col items-end gap-3 hover:border-primary transition-colors"
+                className="group flex-1 card p-5 flex flex-col items-end gap-3 hover:border-primary transition-colors"
             >
                 <span className="text-sm text-muted group-hover:text-primary transition-colors">
                     {nextLabel}
@@ -68,7 +68,7 @@ export default function PrevNextNavbar2({
                 </span>
             </Link> 
             : <div
-                className="group flex-1 bg-white rounded-lg border border-gray-100 p-5 flex flex-col items-end gap-3 hover:border-primary transition-colors"
+                className="group flex-1 card p-5 flex flex-col items-end gap-3 hover:border-primary transition-colors"
             >
                 <span className="text-sm text-muted group-hover:text-primary transition-colors">
                     {nextLabel}

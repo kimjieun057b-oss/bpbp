@@ -8,6 +8,7 @@ export interface Room {
     base_people: number;
     max_people: number;
     extra_person_price: number;
+    quantity: number;
 }
 
 interface ReservationSummaryProps {
@@ -41,15 +42,10 @@ function formatPeriodLabel(checkIn: string | null, checkOut: string | null, nigh
 }
 
 // 진행중
-// 실제 객실목록 (props), 선택기간동안 예약된 객실 비활성화, 인원/옵션에 따른 실시간 금액 계산, 예약자 이름/연락처 입력필드
-// 비회원/회원 예약 : 이름/연락처 필드는 회원일 경우 저장되있는 정보만 자동으로 넣어주기 (회원정보수정 란에 연락처 추가해야됨)_ing
-// 예약 완료 후 필드에 입력한 연락처로 예약조회 가능, 회원(로그인 후)으로 예약한 경우, 마이페이지에서 예약조회 가능_ing
-// 검수: 예약 완료 후, 예약결과, 예약 조회 / 마이페이지 예약 조회, 예약폼 자동 양식, 회원프로필 연락처 입력 / 
+// 부가 서비스 관리 :부가 옵션 crud
+// 예약 취소 추가
 
-
-// 어드민 예약 확인 : 버전1: 캘린더 ui 활용해서 예약 날짜,객실,인원등을 확인 / 버전2: google calander연동
-// 어드민 관리 : 가능 예약수, 금액 수정, 부가옵션crud
-// 추후 확장 예정 : /rooms에 등록된 객실을 summary의 실제 객실 목록 반영
+// 버전2: google calander연동
 // 추후 확장 예정 : PG사 결제 연동(free test용) / ERP - 매출확인
 export default function ReservationSummary({
     checkIn,

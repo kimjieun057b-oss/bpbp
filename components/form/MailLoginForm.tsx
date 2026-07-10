@@ -2,6 +2,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { translateAuthError } from "@/lib/authErrorMessages";
 import Toast from "../common/Toast";
 import SocialLoginForm from "./SocialLoginForm";
 
@@ -37,7 +38,7 @@ export default function MailLoginForm() {
             setShowReset(false);
             setResetEmail("");
         } catch (err: any) {
-            setVaild(err.message || "재설정 메일 발송에 실패했습니다.");
+            setVaild(translateAuthError(err.message) || "재설정 메일 발송에 실패했습니다.");
         } finally {
             setResetLoading(false);
         }
@@ -63,11 +64,7 @@ export default function MailLoginForm() {
             if (error) throw new Error(error.message);
             window.location.href = '/';
         } catch (err: any) {
-            if (err.message === "Invalid login credentials") {
-                setVaild("가입되지 않은 이메일이거나 비밀번호가 올바르지 않습니다.");
-            } else {
-                setVaild(err.message);
-            }
+            setVaild(translateAuthError(err.message) || "로그인에 실패했습니다.");
         } finally {
             setLoading(false);
         }

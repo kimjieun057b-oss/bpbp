@@ -5,7 +5,7 @@ export default function NoticePage () {
         <article>
             <div>
                 <div>
-                    <h2>notice</h2>
+                    {/* <h2>notice</h2> */}
                 </div>
                 <NoticeList/>
             </div>

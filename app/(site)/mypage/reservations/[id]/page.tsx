@@ -45,7 +45,7 @@ export default function MyReservationDetailPage() {
     return (
         <article>
             <div>
-                <h2>예약 상세</h2>
+                {/* <h2>예약 상세</h2> */}
                 <div className="space-y-4">
                     <button type="button" onClick={() => router.push("/mypage")} className="text-sm text-body hover:text-primary">
                         ‹ 목록으로

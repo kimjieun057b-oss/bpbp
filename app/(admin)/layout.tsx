@@ -10,10 +10,12 @@ export default function AdminLayout({
         <>
             <AdminHeader />
             <div className="flex">
-                <SideMenu/>
-                <main className="flex-1 min-h-screen overflow-auto p-6">
-                    {children}
-                </main>
+                <SideMenu />
+                <div className="w-full min-h-screen overflow-auto">
+                    <div className="w-full max-w-350 p-20 mx-auto my-0">
+                        {children}
+                    </div>
+                </div>
             </div>
         </>
     );

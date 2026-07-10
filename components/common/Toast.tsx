@@ -4,7 +4,7 @@ export default function Toast({ vaild, setVaild, onConfirm }: ToastProps) {
     return (
         <>
             {vaild && (
-                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 rounded-lg shadow-card w-[90%] max-w-sm overflow-hidden">
+                <div className="card fixed top-1/2 left-1/2 z-50 w-[90%] max-w-sm -translate-x-1/2 -translate-y-1/2">
                     <div className="px-6 pt-6 pb-5">
                         <p className="text-sm text-body text-center pb-5 border-b border-gray-100">{vaild}</p>
                         {onConfirm ? (

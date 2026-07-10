@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 export async function GET() {
     const { data, error } = await supabaseAdmin
         .from('rooms')
-        .select('id, name, base_price, base_people, max_people, extra_person_price')
+        .select('id, name, base_price, base_people, max_people, extra_person_price, quantity, description, image_url')
         .order('base_price', { ascending: true });
 
     if (error) {

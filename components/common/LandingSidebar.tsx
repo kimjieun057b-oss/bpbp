@@ -12,7 +12,7 @@ export default function LandingSidebar() {
 
     return (
         <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden pc:flex flex-col gap-2">
-            <ul className="bg-white border border-gray-100 rounded-lg shadow-card py-2">
+            <ul className="card py-2">
                 {[
                     { id: 'landing-a', label: 'Landing A' },
                     { id: 'landing-b', label: 'Landing B' },

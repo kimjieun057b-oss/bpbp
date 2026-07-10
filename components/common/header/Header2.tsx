@@ -49,11 +49,11 @@ export default function Header2() {
        <>
        {/*header style: fixed top-0 left-0 w-full z-40 duration-500 border-b */}
        <header className={`
-                ${isScroll ? "bg-white border-b-[#ccc]" : "bg-transparent border-b-white/50"}`}>
-                
+                ${isScroll ? "bg-white border-b-gray-200" : "bg-transparent border-b-white/50"}`}>
+
                 <div className="flex justify-between items-center py-3.25 px-[5%] w-full max-w-300 m-auto pc:py-0 pc:px-0 pc:border-b-0">
                     <h2>
-                        <Link href="/" className={`text-[1.2rem] pc:text-[1.5rem] font-bold ${isScroll ? "text-black" : "text-white"}`}>
+                        <Link href="/" className={`text-xl pc:text-2xl font-bold ${isScroll ? "text-title" : "text-white"}`}>
                             home
                         </Link>
                     </h2>
@@ -79,28 +79,28 @@ export default function Header2() {
                                         onMouseLeave={() => setIsOpenSub(null)}>
                                         {/* 메인 카테고리 */}
                                         <div className={`cursor-pointer py-3.75 px-2.5 pc:py-6 pc:px-6.25 transition-colors
-                                            ${isTarget ? "bg-[#aaa] text-white font-bold" : "text-black"} 
-                                            ${!isTarget && (isScroll ? "pc:text-black" : "pc:text-white")}`}>
-                                            
+                                            ${isTarget ? "bg-primary text-white font-bold" : "text-title"}
+                                            ${!isTarget && (isScroll ? "pc:text-title" : "pc:text-white")}`}>
+
                                             {c.categories && !isGallery ? (
                                                 <p className="font-bold">{c.title}</p>
                                             ) : (
                                                 <Link href={`/${key}`} onClick={() => setIsOpen(false)}
-                                                    className={`font-bold block pc:text-[17.6px] pc:hover:font-bold ${isScroll ? "pc:text-black" : "pc:text-white"}`}>
+                                                    className={`font-bold block pc:text-lg pc:hover:font-bold ${isScroll ? "pc:text-title" : "pc:text-white"}`}>
                                                     {c.title}
                                                 </Link>
                                             )}
                                         </div>
                                         {/* 서브 카테고리 */}
                                         {c.categories && !isGallery && (
-                                            <ul className={`transition-all duration-500 ease-in-out pc:absolute pc:top-full pc:left-0 pc:w-62.5 pc:bg-[#aaa]
+                                            <ul className={`transition-all duration-500 ease-in-out pc:absolute pc:top-full pc:left-0 pc:w-62.5 pc:bg-primary
                                                 ${isTarget ? "max-h-60 opacity-100 translate-y-0 visible" : "max-h-0 opacity-0 -translate-y-2 invisible"}`}>
                                                 {c.categories.map((sub) => (
-                                                    <li key={sub.url} 
-                                                        className="hover:bg-[#eee] pc:hover:bg-[#eee] transition-colors border-b border-white/50 last:border-0"
+                                                    <li key={sub.url}
+                                                        className="hover:bg-surface pc:hover:bg-surface transition-colors border-b border-white/50 last:border-0"
                                                         onClick={() => setIsOpen(false)}>
-                                                        <Link href={`/${key}/${sub.url}`} 
-                                                              className="block py-3.75 px-4 text-black pc:text-white">
+                                                        <Link href={`/${key}/${sub.url}`}
+                                                              className="block py-3.75 px-4 text-title pc:text-white">
                                                             {sub.name}
                                                         </Link>
                                                     </li>

@@ -28,11 +28,11 @@
   }
 
   html {
-    @apply text-title bg-surface overflow-x-hidden;
+    @apply text-title overflow-x-hidden;
   }
 
   body {
-    @apply text-title bg-surface overflow-x-hidden;
+    @apply text-title overflow-x-hidden;
   }
 
   h1 {
@@ -148,7 +148,7 @@
 
   /* Card */
   .card {
-    @apply bg-white rounded-lg border border-gray-100 shadow-card overflow-hidden;
+    @apply bg-white rounded-lg border border-gray-100 overflow-hidden;
   }
 
   /* Badge */

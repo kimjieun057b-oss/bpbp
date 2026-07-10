@@ -1,4 +1,5 @@
-// 예약 등록 - 최종 정합성 검증은 DB의 exclusion constraint(bookings_no_overlap)가 담당
+// 예약 등록 - 객실은 quantity(동일 타입 객실 개수)만큼 동시 예약이 가능하므로,
+// 겹치는 기간의 확정 예약 수를 세어 quantity를 넘지 않는지 확인한다.
 // table: bookings
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
 
         const { data: room, error: roomError } = await supabaseAdmin
             .from('rooms')
-            .select('id, base_price, base_people, max_people, extra_person_price')
+            .select('id, base_price, base_people, max_people, extra_person_price, quantity')
             .eq('id', room_id)
             .single();
 
@@ -52,6 +53,22 @@ export async function POST(request: Request) {
         const maxExtraPeople = Math.max(0, room.max_people - room.base_people);
         if (extraPeople > maxExtraPeople) {
             return NextResponse.json({ error: '최대 인원을 초과했습니다.' }, { status: 400 });
+        }
+
+        // 같은 객실(room_id)이 quantity개 만큼 있으므로, 겹치는 기간에 확정된 예약 수가
+        // quantity 미만일 때만 새 예약을 허용한다.
+        const { count: overlappingCount, error: overlapError } = await supabaseAdmin
+            .from('bookings')
+            .select('id', { count: 'exact', head: true })
+            .eq('room_id', room_id)
+            .neq('status', 'cancelled')
+            .lt('check_in', check_out)
+            .gt('check_out', check_in);
+
+        if (overlapError) throw new Error(overlapError.message);
+
+        if ((overlappingCount ?? 0) >= room.quantity) {
+            return NextResponse.json({ error: '해당 기간에 예약 가능한 객실이 없습니다.' }, { status: 409 });
         }
 
         const nights = calcNights(check_in, check_out);
@@ -80,7 +97,7 @@ export async function POST(request: Request) {
             .single();
 
         if (error) {
-            // bookings_no_overlap exclusion constraint 위반 (동시 예약 충돌)
+            // 예전 exclusion constraint(bookings_no_overlap)가 아직 남아있는 경우를 대비한 방어 처리
             if (error.code === '23P01') {
                 return NextResponse.json({ error: '방금 다른 예약이 확정되어 해당 객실/기간은 예약할 수 없습니다.' }, { status: 409 });
             }

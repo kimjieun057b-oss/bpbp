@@ -13,13 +13,13 @@ export default function Kakaomap() {
     });
 
     if (loading) return (
-        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f4f6f8", color: "#4b5563", fontSize: "14px" }}>
+        <div style={{ width: "100%", height: "100%" }} className="flex items-center justify-center bg-surface text-sm text-body">
             지도를 불러오는 중입니다...
         </div>
     );
 
     if (error) return (
-        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f9fafb", color: "#9ca3af", fontSize: "14px" }}>
+        <div style={{ width: "100%", height: "100%" }} className="flex items-center justify-center bg-surface text-sm text-muted">
             지도를 불러오지 못했습니다.
         </div>
     );

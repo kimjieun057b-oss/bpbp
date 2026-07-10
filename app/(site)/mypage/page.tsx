@@ -12,8 +12,12 @@ export default function Mypage() {
           <MyReservationList />
         </div>
         <div className="flex gap-3 mt-6">
-          <Link href="/mypage/withdraw" className="btn-danger">탈퇴</Link>
-          <Link href="/mypage/edit" className="btn-ghost">회원정보 수정</Link>
+          <button>
+            <Link href="/mypage/withdraw" className="btn-danger px-5 py-2.5 border border-red-50 font-medium">탈퇴</Link>
+          </button>
+          <button>
+            <Link href="/mypage/edit" className="btn-ghost">회원정보 수정</Link>
+          </button>
         </div>
       </div>
     </article>

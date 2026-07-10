@@ -32,19 +32,28 @@
 ## 4. 디자인시스템 (Design System)
 프로젝트 투입 시 인라인 CSS 스타일을 일괄 제거하거나 Tailwind CSS 클래스로 쉽게 치환할 수 있도록 스타일 테마를 극도로 단순화합니다.
 
-* **포인트 컬러 (Point Color)**
-  * `#2563eb` (기본 블루 계열 단색 하나만 사용)
-  * 텍스트 강조, 주요 버튼 배경색, 컴포넌트 최상단 포인트 보더 선(`borderTop`)에만 제한적으로 적용하여 시인성 확보.
-* **무채색 컬러 (Monochrome)**
-  * **전체 배경**: `#f4f6f8` (연한 회색으로 화면 구획 및 컴포넌트 경계 분리용)
-  * **콘텐츠 박스**: `#ffffff` (기본 흰색 바탕)
-  * **주요 타이틀**: `#111827` (가장 짙은 텍스트)
-  * **일반 본문**: `#4b5563` (가독성이 확보되는 중간 회색 텍스트)
-  * **안내 / 푸터**: `#9ca3af` (비활성 상태 또는 연한 정보용 텍스트)
-* **레이아웃 스타일 가이드**
-  * 폰트 크기(`fontSize`)는 인라인 스타일로 고정하여 묶어두지 않고, 프로젝트 기본 설정을 자연스럽게 상속받거나 브라우저 기본 크기를 따르도록 최소화하고 단위는 'rem'을 사용.
-  * 여백(`padding`, `margin`)과 테두리 곡률(`borderRadius: 8px`)은 레이아웃이 뭉개지지 않을 최소 수치만 부여.
-  * 컴포넌트가 공중에 붕 뜨거나 묻히지 않도록 투명도가 들어간 아주 연한 그림자(`boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"`)와 테두리 선(`border: "1px solid #f3f4f6"`)만 활용하여 구조 인지 유도.
+1. 디자인 스타일 변경: 
+   - 'AI 생성물'처럼 보이는 과도한 그라데이션과 그림자(Shadow) 효과는 제거해줘.
+   - 그림자 대신 `border`와 `border-color`를 사용하여 구조를 명확히 정의하는 'Flat & Clean' 스타일로 변경해줘.
+   - 배경색은 제거하고 전체적인 여백(Spacing)과 타이포그래피에 집중하여 깔끔한 기업형 레이아웃을 유지해줘.
+   - 테두리 곡률(border-radius)은 일관되게 `8px`(`rounded-lg`)를 사용해줘.
+
+2. 디자인 시스템 및 테마 관리 (유지보수 중심):
+   - 색상 관리는 하드코딩하지 말고 `tailwind.config.js`의 `theme.extend.colors`를 사용해줘.
+   - 아래의 컬러 팔레트를 `tailwind.config.js`에 설정하고, 컴포넌트에서는 `text-primary`, `bg-primary`, `border-primary` 등의 유틸리티 클래스만 사용해줘.
+   
+   [컬러 팔레트]
+   - primary: #2563eb
+   - bg-base: transparent
+   - content-box: #ffffff
+   - text-main: #111827
+   - text-sub: #4b5563
+   - text-muted: #9ca3af
+
+3. 출력 형식:
+   - 변경된 `tailwind.config.js` 설정 파일 코드.
+   - 이 시스템을 적용한 대표적인 UI 컴포넌트(버튼, 카드) 예시.
+   - 앞으로 포인트 컬러를 수정할 때 `tailwind.config.js`의 어떤 부분을 수정하면 전체에 일괄 반영되는지 설명해줘.
 
 
 ### Tailwind 토큰 (globals.css `@theme` / tailwind.config.js)

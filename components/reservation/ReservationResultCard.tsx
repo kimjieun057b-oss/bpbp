@@ -1,6 +1,7 @@
 import { ADDON_OPTIONS } from "@/lib/reservationOptions";
 import { calcNights } from "@/lib/reservationDate";
-import { ReservationDetail, STATUS_BADGE_CLASS, STATUS_LABEL } from "@/lib/reservationDetail";
+import { ReservationDetail } from "@/lib/reservationDetail";
+import { getDisplayStatus, CUSTOMER_STATUS_BADGE_CLASS, STATUS_LABEL } from "@/lib/reservationStatus";
 
 function formatDateLabel(iso: string) {
     const d = new Date(iso);
@@ -13,12 +14,13 @@ export default function ReservationResultCard({ booking }: { booking: Reservatio
     const optionLabels = booking.options
         .map((id) => ADDON_OPTIONS.find((o) => o.id === id)?.label)
         .filter((label): label is NonNullable<typeof label> => Boolean(label));
+    const displayStatus = getDisplayStatus(booking.status, booking.check_in);
 
     return (
-        <div className="card space-y-4 p-6">
+        <div className="card space-y-4 p-6 bg-white">
             <div className="flex items-center justify-between">
                 <h4 className="text-base font-semibold text-title">{booking.room_name}</h4>
-                <span className={`badge ${STATUS_BADGE_CLASS[booking.status]}`}>{STATUS_LABEL[booking.status]}</span>
+                <span className={`badge ${CUSTOMER_STATUS_BADGE_CLASS[displayStatus]}`}>{STATUS_LABEL[displayStatus]}</span>
             </div>
 
             <div className="space-y-2 border-t border-gray-100 pt-4 text-sm text-body">

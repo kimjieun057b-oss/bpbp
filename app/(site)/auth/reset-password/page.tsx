@@ -1,13 +1,11 @@
 "use client";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { translateAuthError } from "@/lib/authErrorMessages";
 import Toast from "@/components/common/Toast";
 
 // 이메일로 받은 비밀번호 재설정 링크로 진입하는 페이지
 export default function ResetPasswordPage() {
-    const router = useRouter();
-
     const [ready, setReady] = useState(false);
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -34,7 +32,9 @@ export default function ResetPasswordPage() {
 
     const handleCloseToast: Dispatch<SetStateAction<string | null>> = (value) => {
         if (isSuccess && value === null) {
-            router.replace('/login');
+            // Header 등 세션을 한 번만 확인하는 컴포넌트가 남아있으므로,
+            // 소프트 네비게이션 대신 하드 리다이렉트로 앱을 새로 로드시킨다. (LogoutButton과 동일한 방식)
+            window.location.href = '/login';
             return;
         }
         setVaild(value);
@@ -64,10 +64,13 @@ export default function ResetPasswordPage() {
             const { error } = await supabase.auth.updateUser({ password });
             if (error) throw new Error(error.message);
 
+            // 비밀번호 재설정 링크로 생성된 세션을 종료해, 새 비밀번호로 다시 로그인하도록 강제한다.
+            await supabase.auth.signOut();
+
             setIsSuccess(true);
             setVaild("비밀번호가 변경되었습니다. 다시 로그인해주세요.");
         } catch (err: any) {
-            setVaild(err.message || "비밀번호 변경에 실패했습니다.");
+            setVaild(translateAuthError(err.message) || "비밀번호 변경에 실패했습니다.");
         } finally {
             setLoading(false);
         }
@@ -80,7 +83,7 @@ export default function ResetPasswordPage() {
         <article>
             <div>
                 <div>
-                    <h2>비밀번호 재설정</h2>
+                    {/* <h2>비밀번호 재설정</h2> */}
                     <p>새로운 비밀번호를 입력해주세요.</p>
                 </div>
                 <form onSubmit={onSubmit} className="space-y-4">

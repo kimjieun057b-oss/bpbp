@@ -13,6 +13,7 @@ interface Booking {
     check_out: string;
 }
 
+// 예약 등록 고객용 캘린더
 export default function ReservationRegisterClient() {
     const router = useRouter();
     const now = useMemo(() => new Date(), []);
@@ -84,6 +85,7 @@ export default function ReservationRegisterClient() {
         loadAvailability();
     }, [loadAvailability]);
 
+    // 객실은 room.quantity개 만큼 동시 보유하고 있으므로, 겹치는 예약 수가 quantity 이상일 때만 마감으로 취급한다.
     const fullyBookedDates = useMemo(() => {
         const result = new Set<string>();
         if (rooms.length === 0) return result;
@@ -91,10 +93,13 @@ export default function ReservationRegisterClient() {
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         for (let day = 1; day <= daysInMonth; day++) {
             const iso = formatDateISO(year, month, day);
-            const allRoomsBooked = rooms.every((room) =>
-                bookings.some((b) => b.room_id === room.id && b.check_in <= iso && iso < b.check_out)
-            );
-            if (allRoomsBooked) result.add(iso);
+            const allRoomsFull = rooms.every((room) => {
+                const bookedCount = bookings.filter(
+                    (b) => b.room_id === room.id && b.check_in <= iso && iso < b.check_out
+                ).length;
+                return bookedCount >= room.quantity;
+            });
+            if (allRoomsFull) result.add(iso);
         }
         return result;
     }, [rooms, bookings, year, month]);
@@ -104,10 +109,10 @@ export default function ReservationRegisterClient() {
         if (!checkIn || !checkOut) return result;
 
         for (const room of rooms) {
-            const overlaps = bookings.some(
+            const overlapCount = bookings.filter(
                 (b) => b.room_id === room.id && isDateRangeOverlapping(checkIn, checkOut, b.check_in, b.check_out)
-            );
-            if (overlaps) result.add(room.id);
+            ).length;
+            if (overlapCount >= room.quantity) result.add(room.id);
         }
         return result;
     }, [checkIn, checkOut, rooms, bookings]);
