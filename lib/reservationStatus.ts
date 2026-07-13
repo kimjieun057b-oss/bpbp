@@ -5,19 +5,39 @@ import { todayISO } from "./reservationDate";
 // cancelled(예약취소)는 booking.status가 'cancelled'일 때만 표시되는 별도 상태
 // checkin_due(체크인 전)는 DB에 저장되는 값이 아니라, confirmed 상태에서 체크인 날짜가
 // 도래했을 때 화면에서만 계산해서 보여주는 파생 상태 (getDisplayStatus 참고)
-export type ReservationStatus = "confirmed" | "checkin_due" | "checked_in" | "checked_out" | "cancelled";
+// cancel_requested(취소 대기)/refunding(환불 진행중)는 booking.cancel_status
+// ('requested' | 'approved')에서 계산되는 상태 - 승인 전까지는 예약이 그대로 유효하므로
+// booking.status는 'confirmed'를 유지하고, 관리자가 승인해야 booking.status가 'cancelled'로 바뀐다
+export type ReservationStatus =
+    | "confirmed"
+    | "checkin_due"
+    | "checked_in"
+    | "checked_out"
+    | "cancel_requested"
+    | "refunding"
+    | "cancelled";
 
-// 관리자가 직접 변경 가능한 상태만 (체크인 전/취소는 이 목록에서 제외 - 자동 계산되거나 별도 흐름)
+// 관리자가 직접 변경 가능한 상태만 (체크인 전/취소 관련 상태는 이 목록에서 제외 - 자동 계산되거나 별도 흐름)
 export const EDITABLE_STATUSES: ReservationStatus[] = ["confirmed", "checked_in", "checked_out"];
 
 // 필터 UI에서 사용하는 전체 표시 상태 (파생 상태인 체크인 전 포함)
-export const ALL_DISPLAY_STATUSES: ReservationStatus[] = ["confirmed", "checkin_due", "checked_in", "checked_out", "cancelled"];
+export const ALL_DISPLAY_STATUSES: ReservationStatus[] = [
+    "confirmed",
+    "checkin_due",
+    "checked_in",
+    "checked_out",
+    "cancel_requested",
+    "refunding",
+    "cancelled",
+];
 
 export const STATUS_LABEL: Record<ReservationStatus, string> = {
     confirmed: "예약 확정",
     checkin_due: "체크인 전",
     checked_in: "체크인 완료",
     checked_out: "체크아웃 완료",
+    cancel_requested: "취소 대기",
+    refunding: "환불 진행중",
     cancelled: "예약 취소",
 };
 
@@ -27,6 +47,8 @@ export const ADMIN_STATUS_BADGE_CLASS: Record<ReservationStatus, string> = {
     checkin_due: "badge-info",
     checked_in: "badge-warning",
     checked_out: "badge-success",
+    cancel_requested: "badge-danger",
+    refunding: "badge-accent",
     cancelled: "badge-muted",
 };
 
@@ -36,6 +58,8 @@ export const ADMIN_STATUS_BAR_CLASS: Record<ReservationStatus, { base: string; s
     checkin_due: { base: "bg-primary/10 text-primary hover:bg-primary/20", selected: "bg-primary text-white" },
     checked_in: { base: "bg-amber-50 text-amber-600 hover:bg-amber-100", selected: "bg-amber-500 text-white" },
     checked_out: { base: "bg-green-50 text-green-600 hover:bg-green-100", selected: "bg-green-600 text-white" },
+    cancel_requested: { base: "bg-red-50 text-red-600 hover:bg-red-100", selected: "bg-red-500 text-white" },
+    refunding: { base: "bg-violet-50 text-violet-600 hover:bg-violet-100", selected: "bg-violet-500 text-white" },
     cancelled: { base: "bg-gray-100 text-muted hover:bg-gray-200", selected: "bg-gray-500 text-white" },
 };
 
@@ -45,12 +69,23 @@ export const CUSTOMER_STATUS_BADGE_CLASS: Record<ReservationStatus, string> = {
     checkin_due: "badge-info",
     checked_in: "badge-warning",
     checked_out: "badge-success",
+    cancel_requested: "badge-danger",
+    refunding: "badge-accent",
     cancelled: "badge-muted",
 };
 
-// booking.status(confirmed/pending/cancelled) + check_status(confirmed/checked_in/checked_out)를
-// 화면에 보여줄 단일 상태값으로 합성 (관리자 상태변경 버튼과 매칭되는 "원본" 값 - checkin_due는 포함하지 않음)
-export function resolveReservationStatus(bookingStatus: string, checkStatus: string | null | undefined): ReservationStatus {
+// booking.status(confirmed/pending/cancelled) + check_status(confirmed/checked_in/checked_out) +
+// cancel_status(null/requested/approved)를 화면에 보여줄 단일 상태값으로 합성
+// (관리자 상태변경 버튼과 매칭되는 "원본" 값 - checkin_due는 포함하지 않음)
+// cancel_status를 가장 먼저 확인하는 이유: 취소 신청/승인 중인 예약은 체크인/체크아웃 상태보다
+// 우선적으로 보여줘야 하기 때문 (승인 전까지는 booking.status가 여전히 confirmed이므로)
+export function resolveReservationStatus(
+    bookingStatus: string,
+    checkStatus: string | null | undefined,
+    cancelStatus?: string | null,
+): ReservationStatus {
+    if (cancelStatus === "requested") return "cancel_requested";
+    if (cancelStatus === "approved") return "refunding";
     if (bookingStatus === "cancelled") return "cancelled";
     if (checkStatus === "checked_in" || checkStatus === "checked_out") return checkStatus;
     return "confirmed";
@@ -62,4 +97,12 @@ export function resolveReservationStatus(bookingStatus: string, checkStatus: str
 export function getDisplayStatus(status: ReservationStatus, checkIn: string): ReservationStatus {
     if (status === "confirmed" && checkIn <= todayISO()) return "checkin_due";
     return status;
+}
+
+// 체크인 3일 전까지만 취소 신청 가능 - status가 순수 confirmed(취소/체크인 등 진행 중이 아님)일 때만 허용
+export function isCancellable(status: ReservationStatus, checkIn: string): boolean {
+    if (status !== "confirmed") return false;
+    const diffMs = new Date(checkIn).getTime() - new Date(todayISO()).getTime();
+    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+    return diffDays >= 3;
 }

@@ -6,6 +6,7 @@ import ReservationSummary, { Room } from "./ReservationSummary";
 import Toast from "../common/Toast";
 import { supabase } from "@/lib/supabase";
 import { formatDateISO, isDateRangeOverlapping } from "@/lib/reservationDate";
+import { AddonOption } from "@/lib/reservationOptions";
 
 interface Booking {
     room_id: string;
@@ -25,6 +26,7 @@ export default function ReservationRegisterClient() {
     const [hoverDate, setHoverDate] = useState<string | null>(null);
 
     const [rooms, setRooms] = useState<Room[]>([]);
+    const [options, setOptions] = useState<AddonOption[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
 
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
@@ -69,6 +71,19 @@ export default function ReservationRegisterClient() {
             }
         };
         loadRooms();
+    }, []);
+
+    useEffect(() => {
+        const loadOptions = async () => {
+            try {
+                const res = await fetch('/api/reservation/options');
+                const { data } = await res.json();
+                setOptions(data ?? []);
+            } catch (err) {
+                console.error("Fail options load...", err);
+            }
+        };
+        loadOptions();
     }, []);
 
     const loadAvailability = useCallback(async () => {
@@ -237,6 +252,7 @@ export default function ReservationRegisterClient() {
                     checkIn={checkIn}
                     checkOut={checkOut}
                     rooms={rooms}
+                    options={options}
                     unavailableRoomIds={unavailableRoomIds}
                     selectedRoomId={selectedRoomId}
                     onSelectRoom={setSelectedRoomId}

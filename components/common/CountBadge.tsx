@@ -1,15 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function InquireBadge() {
+// 사이드메뉴 항목 옆에 붙는 숫자 뱃지 - endpoint가 { count: number }를 반환한다고 가정
+export default function CountBadge({ endpoint }: { endpoint: string }) {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-        fetch('/api/inquire/badge')
+        fetch(endpoint)
             .then((res) => res.json())
             .then(({ count }) => setCount(count ?? 0))
             .catch(() => {});
-    }, []);
+    }, [endpoint]);
 
     if (count === 0) return null;
 

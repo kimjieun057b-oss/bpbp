@@ -1,4 +1,6 @@
-interface MailAttachment {
+import { google } from "googleapis";
+
+export interface MailAttachment {
   filename: string;
   content: Buffer;
   contentType: string;
@@ -59,4 +61,40 @@ export function buildRawEmail({ fromName, fromEmail, to, subject, html, attachme
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
+}
+
+interface SendMailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  fromName: string;
+  attachments?: MailAttachment[];
+}
+
+// Gmail API를 googleapis 패키지로 직접 호출해 메일 발송 (nodemailer 미사용)
+// - OAuth2 refresh token으로 재인증 없이 인증 유지 (발급 방법은 app/api/inquire/mail/route.ts 참고)
+export async function sendMail({ to, subject, html, fromName, attachments = [] }: SendMailOptions) {
+  const OAuth2 = google.auth.OAuth2;
+  const oauth2Client = new OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    "https://developers.google.com/oauthplayground"
+  );
+  oauth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+
+  const gmail = google.gmail({ version: "v1", auth: oauth2Client });
+
+  const raw = buildRawEmail({
+    fromName,
+    fromEmail: process.env.EMAIL_USER!,
+    to,
+    subject,
+    html,
+    attachments,
+  });
+
+  await gmail.users.messages.send({
+    userId: "me",
+    requestBody: { raw },
+  });
 }

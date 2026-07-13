@@ -4,10 +4,8 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { calcNights } from '@/lib/reservationDate';
-import { ADDON_OPTIONS, calcOptionsPrice } from '@/lib/reservationOptions';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const VALID_OPTION_IDS = new Set(ADDON_OPTIONS.map((o) => o.id));
 
 export async function POST(request: Request) {
     try {
@@ -38,7 +36,16 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: '인원 수가 올바르지 않습니다.' }, { status: 400 });
         }
 
-        const optionIds: string[] = Array.isArray(options) ? options.filter((id) => VALID_OPTION_IDS.has(id)) : [];
+        const requestedOptionIds: string[] = Array.isArray(options) ? options : [];
+
+        // 부가서비스도 가격과 마찬가지로 클라이언트 값을 신뢰하지 않고 DB에 실제 존재하는 항목만 인정한다.
+        const { data: optionRows, error: optionsError } = requestedOptionIds.length
+            ? await supabaseAdmin.from('room_options').select('id, price').in('id', requestedOptionIds)
+            : { data: [], error: null };
+
+        if (optionsError) throw new Error(optionsError.message);
+
+        const optionIds = (optionRows ?? []).map((o) => o.id);
 
         const { data: room, error: roomError } = await supabaseAdmin
             .from('rooms')
@@ -76,7 +83,7 @@ export async function POST(request: Request) {
         // 가격은 클라이언트 값을 신뢰하지 않고 서버에서 재계산
         const roomPrice = room.base_price * nights;
         const extraPeopleFee = extraPeople * room.extra_person_price * nights;
-        const optionsPrice = calcOptionsPrice(optionIds);
+        const optionsPrice = (optionRows ?? []).reduce((sum, o) => sum + o.price, 0);
         const totalPrice = roomPrice + extraPeopleFee + optionsPrice;
 
         const { data, error } = await supabaseAdmin

@@ -10,9 +10,11 @@ export default function MyReservationDetailPage() {
     const router = useRouter();
 
     const [booking, setBooking] = useState<ReservationDetail | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [cancelError, setCancelError] = useState<string | null>(null);
 
     useEffect(() => {
         const load = async () => {
@@ -24,6 +26,7 @@ export default function MyReservationDetailPage() {
                     return;
                 }
 
+                setUserId(user.id);
                 const res = await fetch(`/api/reservation/${id}?user_id=${user.id}`);
                 const result = await res.json();
                 if (!res.ok) throw new Error(result.error || "예약 정보를 불러오지 못했습니다.");
@@ -38,6 +41,25 @@ export default function MyReservationDetailPage() {
         load();
     }, [id]);
 
+    const handleCancel = async () => {
+        if (!userId) return;
+        const res = await fetch(`/api/reservation/${id}/cancel`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id: userId }),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+            setCancelError(result.error || "취소 신청에 실패했습니다.");
+            return;
+        }
+
+        setCancelError(null);
+        const refreshed = await fetch(`/api/reservation/${id}?user_id=${userId}`);
+        const refreshedResult = await refreshed.json();
+        if (refreshed.ok) setBooking(refreshedResult.data);
+    };
+
     if (loading) return <div className="loading">정보를 불러오는 중입니다.</div>;
     if (!isLoggedIn) return <div className="loading">로그인 후 이용할 수 있습니다.</div>;
     if (error || !booking) return <div className="loading">{error || "예약 정보를 찾을 수 없습니다."}</div>;
@@ -50,7 +72,8 @@ export default function MyReservationDetailPage() {
                     <button type="button" onClick={() => router.push("/mypage")} className="text-sm text-body hover:text-primary">
                         ‹ 목록으로
                     </button>
-                    <ReservationResultCard booking={booking} />
+                    {cancelError && <p className="text-sm text-red-500">{cancelError}</p>}
+                    <ReservationResultCard booking={booking} onCancel={handleCancel} />
                 </div>
             </div>
         </article>

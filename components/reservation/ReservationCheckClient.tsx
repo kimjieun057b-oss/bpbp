@@ -53,6 +53,24 @@ export default function ReservationCheckClient() {
         (r) => filter === "all" || getDisplayStatus(r.status, r.check_in) === filter
     );
 
+    const handleCancel = async () => {
+        if (!selected) return;
+        const res = await fetch(`/api/reservation/${selected.id}/cancel`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone }),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+            setError(result.error || "취소 신청에 실패했습니다.");
+            return;
+        }
+
+        const refreshed = await fetch(`/api/reservation/lookup?phone=${phone}`);
+        const refreshedResult = await refreshed.json();
+        if (refreshed.ok) setResults(refreshedResult.data ?? []);
+    };
+
     return (
         <div className="space-y-6">
             <form onSubmit={handleSearch} className="card flex flex-col gap-3 p-6 sm:flex-row sm:items-end">
@@ -122,7 +140,7 @@ export default function ReservationCheckClient() {
                     <button type="button" onClick={() => setSelectedId(null)} className="text-sm text-body hover:text-primary">
                         ‹ 목록으로
                     </button>
-                    <ReservationResultCard booking={selected} />
+                    <ReservationResultCard booking={selected} onCancel={handleCancel} />
                 </div>
             )}
         </div>

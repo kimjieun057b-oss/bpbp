@@ -1,4 +1,4 @@
-import { ADDON_OPTIONS } from "@/lib/reservationOptions";
+import { AddonOption, calcOptionsPrice } from "@/lib/reservationOptions";
 import { calcNights } from "@/lib/reservationDate";
 
 export interface Room {
@@ -15,6 +15,7 @@ interface ReservationSummaryProps {
     checkIn: string | null;
     checkOut: string | null;
     rooms: Room[];
+    options: AddonOption[];
     unavailableRoomIds: Set<string>;
     selectedRoomId: string | null;
     onSelectRoom: (id: string) => void;
@@ -42,15 +43,14 @@ function formatPeriodLabel(checkIn: string | null, checkOut: string | null, nigh
 }
 
 // 진행중
-// 부가 서비스 관리 :부가 옵션 crud
-// 예약 취소 추가
-
 // 버전2: google calander연동
-// 추후 확장 예정 : PG사 결제 연동(free test용) / ERP - 매출확인
+// 추후 확장 예정 : PG사 결제 연동(free test용 -> 환불 관리, 환불 정책 추가) / ERP - 매출확인
+// 확장 : sms api (문의 폼, 예약 완료/취소 알림)
 export default function ReservationSummary({
     checkIn,
     checkOut,
     rooms,
+    options,
     unavailableRoomIds,
     selectedRoomId,
     onSelectRoom,
@@ -70,10 +70,7 @@ export default function ReservationSummary({
 
     const roomPrice = selectedRoom ? selectedRoom.base_price * nights : 0;
     const extraPeopleFee = selectedRoom ? extraPeople * selectedRoom.extra_person_price * nights : 0;
-    const optionsPrice = selectedOptionIds.reduce((sum, id) => {
-        const option = ADDON_OPTIONS.find((o) => o.id === id);
-        return sum + (option?.price ?? 0);
-    }, 0);
+    const optionsPrice = calcOptionsPrice(selectedOptionIds, options);
     const totalPrice = roomPrice + extraPeopleFee + optionsPrice;
 
     const maxExtraPeople = selectedRoom ? Math.max(0, selectedRoom.max_people - selectedRoom.base_people) : 0;
@@ -148,6 +145,7 @@ export default function ReservationSummary({
                         </button>
                     </div>
                 </div>
+                {/* 부가 옵션  */}
                 {selectedRoom && (
                     <p className="mt-1 text-xs text-muted">
                         기준 {selectedRoom.base_people}인 · 최대 {selectedRoom.max_people}인 (1인당 +
@@ -159,7 +157,7 @@ export default function ReservationSummary({
             <div className="border-t border-gray-100 pt-5">
                 <h4 className="mb-3 text-sm font-semibold text-title">부가 서비스</h4>
                 <div className="space-y-2">
-                    {ADDON_OPTIONS.map((option) => (
+                    {options.map((option) => (
                         <label key={option.id} className="flex cursor-pointer items-center justify-between text-sm text-body">
                             <span className="flex items-center gap-2">
                                 <input
@@ -173,6 +171,7 @@ export default function ReservationSummary({
                             <span className="text-xs text-muted">+{option.price.toLocaleString()}원</span>
                         </label>
                     ))}
+                    {options.length === 0 && <p className="text-xs text-muted">등록된 부가서비스가 없습니다.</p>}
                 </div>
             </div>
 

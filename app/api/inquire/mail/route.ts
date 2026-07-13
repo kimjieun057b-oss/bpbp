@@ -1,8 +1,7 @@
-import { google } from "googleapis";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { buildMailHtml } from "@/lib/mailTemplate";
-import { buildRawEmail } from "@/lib/gmail";
+import { sendMail } from "@/lib/gmail";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 const ADMIN_SESSION_VALUE = 'is_authenticated_true_secret_key';
@@ -54,20 +53,6 @@ export async function POST(req: Request) {
     const contents = formData.get("contents") as string;
     const file = formData.get("file") as File | null;
 
-    // OAuth2 클라이언트 설정
-    const OAuth2 = google.auth.OAuth2;
-    const oauth2Client = new OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      "https://developers.google.com/oauthplayground" 
-    );
-
-    const gmail = google.gmail({version: "v1", auth: oauth2Client});
-
-    oauth2Client.setCredentials({
-      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-    });
-
     const emailHtml = buildMailHtml({ title, name, phone, email, fax, contents });
 
     // 첨부파일 처리
@@ -81,21 +66,13 @@ export async function POST(req: Request) {
       });
     }
 
-    // RFC 5322 형식으로 메시지 구성 (첨부파일 포함 시 multipart/mixed)
     const subject = `[신규 문의] 문의가 접수 되었습니다. <${name}>`;
-    const encodedMessage = buildRawEmail({
-      fromName: "신규 문의",
-      fromEmail: process.env.EMAIL_USER!,
+    await sendMail({
       to: process.env.RECEIVER_EMAIL!,
       subject,
       html: emailHtml,
+      fromName: "신규 문의",
       attachments,
-    });
-
-    // API 호출
-    await gmail.users.messages.send({
-      userId: "me",
-      requestBody: { raw: encodedMessage },
     });
 
     // 메일 발송 성공 후 관리자 페이지 문의 목록에 노출하기 위해 기록

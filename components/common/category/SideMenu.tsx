@@ -1,6 +1,6 @@
 import { ADMIN_CATEGORY } from "@/datas/categories";
 import Link from "next/link";
-import InquireBadge from "@/components/common/InquireBadge";
+import CountBadge from "@/components/common/CountBadge";
 
 export default function SideMenu() {
     return (
@@ -21,7 +21,10 @@ export default function SideMenu() {
                                                 className="flex items-center px-5 py-2 text-sm text-body hover:text-primary hover:bg-muted transition-colors"
                                             >
                                                 {sub.name}
-                                                {sub.url === 'inquiries' && <InquireBadge />}
+                                                {sub.url === 'inquiries' && <CountBadge endpoint="/api/inquire/badge" />}
+                                                {sub.url === 'cancel' && (
+                                                    <CountBadge endpoint="/api/admin/reservation/cancellations/badge" />
+                                                )}
                                             </Link>
                                         </li>
                                     ))}

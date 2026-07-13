@@ -172,6 +172,14 @@
     @apply text-muted bg-gray-100;
   }
 
+  .badge-danger {
+    @apply text-red-600 bg-red-50;
+  }
+
+  .badge-accent {
+    @apply text-violet-600 bg-violet-50;
+  }
+
   /* Danger action */
   .btn-danger {
     @apply text-xs px-4 py-2 rounded-lg bg-red-50 text-red-600

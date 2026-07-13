@@ -14,6 +14,9 @@ export const USER_CATEGORY : { [key: string]: { title: string; categories?: {nam
             {name: "register", url: "register"},
         ],
     },
+    room: {
+        title:"ROOM",
+    },
     notice: {
         title:"NOTICE",
     },
@@ -28,6 +31,7 @@ export const ADMIN_CATEGORY : { [key: string]: { title: string; categories?: {na
     categories: [
       { name: "실시간 예약 달력", url: "calendar" },
       { name: "예약 리스트 관리", url: "list" },
+      { name: "예약 취소 관리", url: "cancel" },
     ],
   },
   room: {

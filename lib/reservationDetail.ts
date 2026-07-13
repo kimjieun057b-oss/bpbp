@@ -15,7 +15,7 @@ export interface ReservationDetail {
 }
 
 export const BOOKING_DETAIL_SELECT =
-    'id, status, check_in, check_out, extra_people, options, total_price, name, phone, check_status, created_at, rooms(name)';
+    'id, status, check_in, check_out, extra_people, options, total_price, name, phone, check_status, cancel_status, created_at, rooms(name)';
 
 export function mapBookingRow(row: any): ReservationDetail {
     return {
@@ -28,7 +28,7 @@ export function mapBookingRow(row: any): ReservationDetail {
         total_price: row.total_price,
         name: row.name,
         phone: row.phone,
-        status: resolveReservationStatus(row.status, row.check_status),
+        status: resolveReservationStatus(row.status, row.check_status, row.cancel_status),
         created_at: row.created_at,
     };
 }
