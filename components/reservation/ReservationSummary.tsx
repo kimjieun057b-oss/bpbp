@@ -42,10 +42,24 @@ function formatPeriodLabel(checkIn: string | null, checkOut: string | null, nigh
     return `${format(checkIn)} ~ ${format(checkOut)} / ${nights}박`;
 }
 
-// 진행중
-// 버전2: google calander연동
-// 추후 확장 예정 : PG사 결제 연동(free test용 -> 환불 관리, 환불 정책 추가) / ERP - 매출확인
-// 확장 : sms api (문의 폼, 예약 완료/취소 알림)
+/*
+진행중
+
+2. 환불 대기중 -> 예약 취소 확정, 환불 완료 추가
+ㄴ 예약 상태 뱃지 : 예약 칸이 살아있는가 (취소 신청중, 취소 확정, 정상예약)
+ㄴ 환불 상태 뱃지 : 돈을 환불해주었는가 (대기중, 완료, 실패)
+--> 고객이 취소 신청 > 관리자 취소 승인 시 '예약 취소 확정', 환불 대기중 뱃지가 둘다 표시됨 --> 환불 완료 시, 취소확정, 환불완료 뱃지 둘다 표시
+* PG사 연동 시, 버튼 클릭으로 자동으로 pg api가 환불실행하는지 확인하기
+
+3. MailUiTemplate ui 수정 필요
+
+4. 캠핑장 홈페이지 만들기 (prd > 진짜 홈페이지처럼 ui 꾸미기 / 전반적으로 mo&pc 버전 style 검토)
+5. 예시로 캠핑장으로 만들긴 했지만 펜션, 풀빌라에도 바로 활용이 가능한지 확인
+
+추후 확장 예정 : PG사 결제 연동(free test용 -> 환불 관리, 환불 정책 추가) / ERP - 매출확인
+확장 : sms api (문의 폼, 예약 완료/취소 알림)
+*/
+
 export default function ReservationSummary({
     checkIn,
     checkOut,
@@ -219,7 +233,6 @@ export default function ReservationSummary({
                     <span>부가 서비스</span>
                     <span>{optionsPrice.toLocaleString()}원</span>
                 </div>
-                {/* 진행중 : 박당 금액 - 기본금액: 1박, 그 이후 2,3,.... 1박기준 금액이 plus */}
                 <div className="flex items-center justify-between pt-2 text-base font-semibold text-title">
                     <span>합계</span>
                     <span className="text-primary">{totalPrice.toLocaleString()}원</span>

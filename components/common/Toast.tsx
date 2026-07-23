@@ -1,4 +1,10 @@
-import { ToastProps } from "@/types/type";
+import { Dispatch, SetStateAction } from "react";
+
+export interface ToastProps {
+    vaild: string | null;
+    setVaild: Dispatch<SetStateAction<string | null>>;
+    onConfirm?: () => void;
+}
 
 export default function Toast({ vaild, setVaild, onConfirm }: ToastProps) {
     return (

@@ -235,19 +235,23 @@ export default function ReservationRegisterClient() {
 
     return (
         <>
-            <div className="flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-start">
-                <ReservationCalendar
-                    year={year}
-                    month={month}
-                    checkIn={checkIn}
-                    checkOut={checkOut}
-                    hoverDate={hoverDate}
-                    fullyBookedDates={fullyBookedDates}
-                    onPrevMonth={handlePrevMonth}
-                    onNextMonth={handleNextMonth}
-                    onSelectDate={handleSelectDate}
-                    onHoverDate={setHoverDate}
-                />
+            <div className="flex flex-col gap-6 sm:gap-8 lg:flex-row">
+                <div className="flex flex-col gap-6 lg:flex-1">
+                    <div className="lg:sticky lg:top-20">
+                        <ReservationCalendar
+                            year={year}
+                            month={month}
+                            checkIn={checkIn}
+                            checkOut={checkOut}
+                            hoverDate={hoverDate}
+                            fullyBookedDates={fullyBookedDates}
+                            onPrevMonth={handlePrevMonth}
+                            onNextMonth={handleNextMonth}
+                            onSelectDate={handleSelectDate}
+                            onHoverDate={setHoverDate}
+                        />
+                    </div>
+                </div>
                 <ReservationSummary
                     checkIn={checkIn}
                     checkOut={checkOut}

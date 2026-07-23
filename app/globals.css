@@ -32,7 +32,7 @@
   }
 
   body {
-    @apply text-title overflow-x-hidden;
+    @apply text-title;
   }
 
   h1 {

@@ -1,11 +1,16 @@
 "use client";
 import { useCallback, useState } from "react";
 import QuillEditor from "../board/QuillEditor";
-import { NoticeFormProps } from "@/types/type";
 import { useCreate } from "@/hooks/useCreate";
 import { useUpdate } from "@/hooks/useUpdate";
 import Toast from "../common/Toast";
 import Link from "next/link";
+
+export interface NoticeFormProps {
+    title: string;
+    contents: string;
+    file_url: null | File
+}
 
 interface NoticeFormOwnProps {
     editId?: number;

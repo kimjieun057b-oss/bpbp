@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { calcNights } from '@/lib/reservationDate';
+import { createReservationEvent } from '@/lib/googleCalendar/reservationEvents';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
 
         const { data: room, error: roomError } = await supabaseAdmin
             .from('rooms')
-            .select('id, base_price, base_people, max_people, extra_person_price, quantity')
+            .select('id, name, base_price, base_people, max_people, extra_person_price, quantity')
             .eq('id', room_id)
             .single();
 
@@ -109,6 +110,21 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: '방금 다른 예약이 확정되어 해당 객실/기간은 예약할 수 없습니다.' }, { status: 409 });
             }
             return NextResponse.json({ error: error.message || '예약에 실패했습니다.' }, { status: 400 });
+        }
+
+        try {
+            // 신규 예약 = confirmed (구글 캘린더 연동)
+            await createReservationEvent({
+                reservationId: data.id,
+                roomName: room.name,
+                guestName: name,
+                phone,
+                checkIn: check_in,
+                checkOut: check_out,
+                extraPeople,
+            });
+        } catch (calendarError) {
+            console.error('Google Calendar 이벤트 생성 실패:', calendarError);
         }
 
         return NextResponse.json({ success: true, data }, { status: 201 });

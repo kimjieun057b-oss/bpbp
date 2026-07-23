@@ -1,7 +1,11 @@
 "use client";
-import { NomalLoginFormProps } from "@/types/type";
 import { useCallback, useState } from "react"
 import Toast from "../common/Toast";
+
+export interface NomalLoginFormProps {
+    admin_id : string;
+    password_hash : string;
+}
 
 export default function NomalLoginForm() {
     // 2. login-ID/PW

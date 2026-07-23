@@ -5,6 +5,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { deleteReservationEvent } from '@/lib/googleCalendar/reservationEvents';
 
 const ADMIN_SESSION_VALUE = 'is_authenticated_true_secret_key';
 
@@ -57,6 +58,14 @@ export async function PATCH(request: Request, { params }: Params) {
 
         if (error || !data) {
             return NextResponse.json({ error: '처리에 실패했습니다.' }, { status: 400 });
+        }
+
+        if (action === 'approve') {
+            try {
+                await deleteReservationEvent(id); // 구글 캘린더 연동 (삭제로직)
+            } catch (calendarError) {
+                console.error('Google Calendar 이벤트 삭제 실패:', calendarError);
+            }
         }
 
         return NextResponse.json({ success: true, data });

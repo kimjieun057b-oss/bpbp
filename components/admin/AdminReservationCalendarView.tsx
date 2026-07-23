@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import AdminReservationCalendar from "./AdminReservationCalendar";
 import AdminReservationPanel from "./AdminReservationPanel";
 import { useAdminReservations } from "@/hooks/useAdminReservations";
+import Link from "next/link";
 
 export default function AdminReservationCalendarView() {
     const now = useMemo(() => new Date(), []);
@@ -36,6 +37,7 @@ export default function AdminReservationCalendarView() {
 
     return (
         <div className="flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-start">
+            <Link href="/google calander 연동"></Link>
             <AdminReservationPanel
                 reservations={reservations}
                 monthReservations={monthReservations}

@@ -2,18 +2,23 @@
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import 'react-quill-new/dist/quill.snow.css';
-import { QuillEditorProps } from '@/types/type';
 
 // npm i react-quill-new (React 16+, Typescript 지원)
 // https://github.com/VaguelySerious/react-quill
 // https://adjh54.tistory.com/735 : 예시
 // quill-delta : Delta 자료구조 전용 라이브러리
-// @mgreminger/quill-image-resize-module : 이미지 사이즈 조절
 // quill-delta-to-html : Delta > html로 변환
 // quill-better-table : table 표
 
 // 500 error : react-quill이 내부적으로 브라우저 객체(document, window)를 곧바로 참조하여 Node.js 환경(서버)에서 터짐 --> mext/dynamic 활용
 // QuillEditor 컴포넌트를 서버사이드렌더링(SSR)에서 제외하고 브라우저(client)에서만 불러오도록 함
+
+// 여러 게시판(공지사항/문의 등)에서 공용으로 사용하는 QuillEditor 컴포넌트의 props
+export interface QuillEditorProps {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+}
 
 const ReactQuill = dynamic(() => import('react-quill-new'), {
     ssr: false,

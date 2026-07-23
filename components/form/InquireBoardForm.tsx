@@ -1,11 +1,22 @@
 "use client";
 import { useCallback, useState } from "react";
 import QuillEditor from "../board/QuillEditor";
-import { InquireBoardFormProps } from "@/types/type";
 import Toast from "../common/Toast";
 import Link from "next/link";
 import { useCreate } from "@/hooks/useCreate";
 import { useUpdate } from "@/hooks/useUpdate";
+
+export interface InquireBoardFormProps {
+    name: string;
+    category: string;
+    mail_id: string;
+    mail_address: string;
+    title: string;
+    contents: string;
+    password_hash: string;
+    file_url: File | null;
+    privacy: boolean;
+}
 
 interface InquireBoardFormOwnProps {
     editId?: number;

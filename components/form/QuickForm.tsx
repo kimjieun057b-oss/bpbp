@@ -3,7 +3,7 @@ import { useCreate } from "@/hooks/useCreate";
 import { ChangeEvent, useCallback, useState } from "react"
 import Toast from "../common/Toast";
 
-// 진행중: 빠른 간편 상담
+// 빠른 간편 상담
 export default function QuickForm() {
     const [form, setForm] = useState({
         name: "",

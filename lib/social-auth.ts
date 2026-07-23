@@ -9,6 +9,7 @@ export const signInWithGoogle = async () => {
         // /auth/callback : 사용자가 우리 사이트가 아닌 소셜 로그인 화면으로 이동했다가 돌아오는 방식 -> 그 돌아오는 주소를 미리 등록해야함
         // Google Cloud Console 에서 리다이렉트 URL: 'supabase project URL/auth/v1/callback' 등록
         // supabase 대시보드 > Authentication > URL Configuration > redirectTo와 동일한 주소를 모두 등록
+
         redirectTo: `${window.location.origin}/auth/callback`,
         
         // 구글 로그인 시 매번 계정을 새로 선택할 수 있게 강제하는 옵션 (선택)
@@ -47,7 +48,10 @@ export const signInWithKakao = async () => {
  /* [구글]
 
   1. Google Cloud Console : OQuth 2.0 Client ID 발급
-  2. supabase Authenitication > URL Configuration's Redirect URLS에서 ...auth/callback 추가
+  - Supabase가 자체적으로 구글 OAuth 앱을 대신 만들어주는 게 아니라, 개발자가 구글 클라우드 콘솔에서 직접 OAuth 클라이언트를 만들어서 Supabase에 "이거 써" 하고 넘겨주는 구조
+  2. Google Cloud Console (구글 로그인이 끝나고 어디로 돌려보낼지?) = https://ljsblutjkwtgeqoeluzo.supabase.co/auth/v1/callback
+  - 구글 로그인 처리 후, supabase 서버로 사용자를 돌려보냄
+  3. supabase Authenitication > URL Configuration's Redirect URLS에서 ...auth/callback 추가
 
  ----------
     1. signInWithGoogle()호출하여 구글 화면으로 이동
@@ -55,10 +59,14 @@ export const signInWithKakao = async () => {
     - supabase로 리다이렉트 -> supabase가 인증코드를 붙여서 /auth/callback으로 다시 리다이렉트
     3. /auth/callback/page.tsx 가 url의 ?code= 값을 supabase.auth.exchangeCodeForSession(code)로 세션 교환
     - 실제 로그인 세션을 발급 받고 홈 (/)으로 이동
+
+    => Supabase가 구글 인증코드를 세션으로 교환한 다음 내 사이트로 돌려보냄
+
+    전체 흐름 : 내 사이트 > 구글 로그인 화면 > supabase 서버 > 내 사이트 /auth/callback
     */
 
     /*
-    [구글 로그인 시, 새창에서 ---supabase.co서비스로 로그인이 뜸..]
+    [구글 로그인 시, 새창에서 ---supabase.co 서비스로 로그인이 뜸..]
     1. Google Cloud Console > supabase 구글 로그인 설정할때 사용한 프로젝트 선택
     2. API & Service > OAuth 동의 화면 > 브랜딩
     3. 앱 이름, 사용자 지원 이메일, 앱 로고, 개발자 연락처
