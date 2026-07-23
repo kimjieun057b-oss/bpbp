@@ -17,6 +17,7 @@ async function isAdmin(): Promise<boolean> {
     return cookieStore.get('admin_session')?.value === ADMIN_SESSION_VALUE;
 }
 
+// 진행중 : 반려 시, 사유 작성 > 사용자에게도 표시 취소 반려된 것도 우선 예약 취소관리 게시판에 기록은 남겨두기
 export async function PATCH(request: Request, { params }: Params) {
     if (!(await isAdmin())) {
         return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 });

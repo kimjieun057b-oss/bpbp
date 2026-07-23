@@ -15,6 +15,7 @@ interface MailInquireItem {
 const ITEMS_PER_PAGE = 8;
 const GRID_COLS = "grid-cols-[60px_minmax(90px,0.5fr)_minmax(180px,1fr)_minmax(90px,0.5fr)_minmax(100px,0.5fr)_minmax(100px,0.5fr)]";
 
+// 진행중 : 답변 상태 토글 (토글처럼 안보임), 문의 메일이 와도 숫자배지 적용 (간편 문의도) / 게시판,메일,간편문의 메뉴버튼에 답변대기(n)문의수 추가
 export default function MailInquireList() {
     const [inquire, setInquire] = useState<MailInquireItem[]>([]);
     const [loading, setLoading] = useState(true);

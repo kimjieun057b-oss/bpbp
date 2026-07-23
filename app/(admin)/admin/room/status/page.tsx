@@ -34,6 +34,7 @@ export default function RoomStatusPage() {
             {loading ? (
                 <p className="px-5 py-8 text-center text-sm text-muted">정보를 불러오는 중입니다.</p>
             ) : (
+                // 진행중 : 갤러리형, 리스트형 선택해서 렌더링
                 <RoomGallery rooms={rooms} getHref={(room) => `/admin/room/status/${room.id}/edit`} />
             )}
         </div>

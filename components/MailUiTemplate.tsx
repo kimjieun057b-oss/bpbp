@@ -1,9 +1,9 @@
 
 export default function MailUiTemplate() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-start bg-surface px-5 py-10 font-sans">
-      <article className="card flex w-full max-w-150 flex-col">
-        <header className="px-9 pb-6 pt-9">
+    <article className="flex min-h-screen flex-col items-center justify-start bg-surface px-5 py-10 font-sans">
+      <div className="card flex w-full max-w-150 flex-col">
+        <div className="px-9 pb-6 pt-9">
           <span className="badge badge-info mb-4">
             신규 문의
           </span>
@@ -13,7 +13,7 @@ export default function MailUiTemplate() {
           <p className="text-sm text-muted">
             접수 일시: {new Date().toLocaleString("ko-KR")}
           </p>
-        </header>
+        </div>
 
         <section className="px-9 py-8">
           <h3 className="mb-3.5 text-sm font-semibold text-title">
@@ -62,10 +62,10 @@ export default function MailUiTemplate() {
           </div>
         </section>
 
-        <footer className="border-t border-gray-200 bg-surface px-9 py-4.5 text-center text-xs text-muted">
+        <div className="border-t border-gray-200 bg-surface px-9 py-4.5 text-center text-xs text-muted">
           본 메일은 시스템에 의해 자동으로 발송된 알림 메일입니다.<br/> 본 수신함은 발송 전용입니다.
-        </footer>
-      </article>
-    </div>
+        </div>
+      </div>
+    </article>
   );
 }

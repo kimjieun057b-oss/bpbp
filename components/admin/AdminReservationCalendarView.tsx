@@ -37,16 +37,6 @@ export default function AdminReservationCalendarView() {
 
     return (
         <div className="flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-start">
-            <Link href="/google calander 연동"></Link>
-            <AdminReservationPanel
-                reservations={reservations}
-                monthReservations={monthReservations}
-                loading={loading}
-                selectedId={selectedId}
-                onSelectReservation={setSelectedId}
-                onBackToList={() => setSelectedId(null)}
-                onChangeStatus={changeStatus}
-            />
             <AdminReservationCalendar
                 year={year}
                 month={month}
@@ -55,6 +45,15 @@ export default function AdminReservationCalendarView() {
                 onPrevMonth={handlePrevMonth}
                 onNextMonth={handleNextMonth}
                 onSelectReservation={setSelectedId}
+            />
+            <AdminReservationPanel
+                reservations={reservations}
+                monthReservations={monthReservations}
+                loading={loading}
+                selectedId={selectedId}
+                onSelectReservation={setSelectedId}
+                onBackToList={() => setSelectedId(null)}
+                onChangeStatus={changeStatus}
             />
         </div>
     );
