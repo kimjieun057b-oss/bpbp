@@ -1,5 +1,4 @@
 import MailForm from "@/components/form/MailForm";
-import MailUiTemplate from "@/components/MailUiTemplate";
 
 export default function ServiceBPage() {
 
@@ -13,7 +12,6 @@ export default function ServiceBPage() {
                 </div>
             </div>
         </article>
-        <MailUiTemplate/>
         </>
     )
 }

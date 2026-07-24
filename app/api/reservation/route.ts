@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { calcNights } from '@/lib/reservationDate';
 import { createReservationEvent } from '@/lib/googleCalendar/reservationEvents';
+import { UNIT_LABEL, josa } from '@/config/terms';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
         const { room_id, check_in, check_out, extra_people, options, name, phone, user_id } = body;
 
         if (typeof room_id !== 'string' || !room_id) {
-            return NextResponse.json({ error: '객실을 선택해 주세요.' }, { status: 400 });
+            return NextResponse.json({ error: `${josa(UNIT_LABEL, "을", "를")} 선택해 주세요.` }, { status: 400 });
         }
         if (typeof check_in !== 'string' || !DATE_RE.test(check_in) || typeof check_out !== 'string' || !DATE_RE.test(check_out)) {
             return NextResponse.json({ error: '체크인/체크아웃 날짜가 올바르지 않습니다.' }, { status: 400 });
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
             .single();
 
         if (roomError || !room) {
-            return NextResponse.json({ error: '존재하지 않는 객실입니다.' }, { status: 404 });
+            return NextResponse.json({ error: `존재하지 않는 ${UNIT_LABEL}입니다.` }, { status: 404 });
         }
 
         const maxExtraPeople = Math.max(0, room.max_people - room.base_people);
@@ -76,7 +77,7 @@ export async function POST(request: Request) {
         if (overlapError) throw new Error(overlapError.message);
 
         if ((overlappingCount ?? 0) >= room.quantity) {
-            return NextResponse.json({ error: '해당 기간에 예약 가능한 객실이 없습니다.' }, { status: 409 });
+            return NextResponse.json({ error: `해당 기간에 예약 가능한 ${josa(UNIT_LABEL, "이", "가")} 없습니다.` }, { status: 409 });
         }
 
         const nights = calcNights(check_in, check_out);
@@ -107,7 +108,7 @@ export async function POST(request: Request) {
         if (error) {
             // 예전 exclusion constraint(bookings_no_overlap)가 아직 남아있는 경우를 대비한 방어 처리
             if (error.code === '23P01') {
-                return NextResponse.json({ error: '방금 다른 예약이 확정되어 해당 객실/기간은 예약할 수 없습니다.' }, { status: 409 });
+                return NextResponse.json({ error: `방금 다른 예약이 확정되어 해당 ${UNIT_LABEL}/기간은 예약할 수 없습니다.` }, { status: 409 });
             }
             return NextResponse.json({ error: error.message || '예약에 실패했습니다.' }, { status: 400 });
         }

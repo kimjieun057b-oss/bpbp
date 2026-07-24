@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { UNIT_LABEL, josa } from '@/config/terms';
 
 const BUCKET = 'room-images';
 const ADMIN_SESSION_VALUE = 'is_authenticated_true_secret_key';
@@ -36,7 +37,7 @@ export async function GET(_request: Request, { params }: Params) {
             .single();
 
         if (error || !data) {
-            return NextResponse.json({ error: '객실을 찾을 수 없습니다.' }, { status: 404 });
+            return NextResponse.json({ error: `${josa(UNIT_LABEL, "을", "를")} 찾을 수 없습니다.` }, { status: 404 });
         }
 
         return NextResponse.json({ data });

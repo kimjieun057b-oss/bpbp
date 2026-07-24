@@ -1,3 +1,5 @@
+import { siteConfig } from "@/config/site";
+
 interface MailTemplateProps {
   title: string;
   name: string;
@@ -100,7 +102,7 @@ export function buildMailHtml({
         </section>
 
         <div style="background-color: #f4f6f8; padding: 18px 36px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
-          본 메일은 시스템에 의해 자동으로 발송된 알림 메일입니다.<br/> 본 수신함은 발송 전용입니다.
+          본 메일은 ${siteConfig.name ? `${escapeHtml(siteConfig.name)} ` : ""}시스템에 의해 자동으로 발송된 알림 메일입니다.<br/> 본 수신함은 발송 전용입니다.
         </div>
       </div>
     </article>

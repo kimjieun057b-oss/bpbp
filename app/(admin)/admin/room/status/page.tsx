@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import RoomGallery, { RoomItem } from "@/components/admin/RoomGallery";
+import { UNIT_LABEL } from "@/config/terms";
 
 export default function RoomStatusPage() {
     const [rooms, setRooms] = useState<RoomItem[]>([]);
@@ -25,9 +26,9 @@ export default function RoomStatusPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-title">객실 상태/요금 관리</h2>
+                <h2 className="text-sm font-semibold text-title">{UNIT_LABEL} 상태/요금 관리</h2>
                 <Link href="/admin/room/status/new" className="btn-primary">
-                    객실 등록
+                    {UNIT_LABEL} 등록
                 </Link>
             </div>
 

@@ -1,3 +1,5 @@
+import { UNIT_LABEL } from "@/config/terms";
+
 export const USER_CATEGORY : { [key: string]: { title: string; categories?: {name: string, url: string}[], banner?: string } } = {
     service: { // room
         title:"SERVICE",
@@ -35,9 +37,9 @@ export const ADMIN_CATEGORY : { [key: string]: { title: string; categories?: {na
     ],
   },
   room: {
-    title: "객실 및 옵션 관리",
+    title: `${UNIT_LABEL} 및 옵션 관리`,
     categories: [
-      { name: "객실 상태/요금 관리", url: "status" },
+      { name: `${UNIT_LABEL} 상태/요금 관리`, url: "status" },
       { name: "부가 서비스 관리", url: "options" },
     ],
   },

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { UNIT_LABEL, josa } from "@/config/terms";
 
 export interface RoomItem {
     id: string;
@@ -20,7 +21,7 @@ interface RoomGalleryProps {
 // 객실 갤러리 - rooms 데이터를 카드 그리드로 렌더링만 하는 순수 컴포넌트 (관리자/사용자 화면 공용)
 export default function RoomGallery({ rooms, getHref }: RoomGalleryProps) {
     if (rooms.length === 0) {
-        return <p className="px-5 py-8 text-center text-sm text-muted">등록된 객실이 없습니다.</p>;
+        return <p className="px-5 py-8 text-center text-sm text-muted">등록된 {josa(UNIT_LABEL, "이", "가")} 없습니다.</p>;
     }
 
     return (
@@ -44,7 +45,7 @@ export default function RoomGallery({ rooms, getHref }: RoomGalleryProps) {
                                 <span className="text-sm">
                                     기준 {room.base_people}인 · 최대 {room.max_people}인
                                 </span>
-                                <span className="text-sm">객실 {room.quantity}개</span>
+                                <span className="text-sm">{UNIT_LABEL} {room.quantity}개</span>
                             </div>
                         </div>
 

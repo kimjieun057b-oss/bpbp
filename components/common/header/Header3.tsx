@@ -1,5 +1,6 @@
 "use client";
 import { USER_CATEGORY } from "@/datas/categories";
+import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -18,7 +19,7 @@ export default function Header3() {
                 <div className="max-w-341.5 mx-auto px-5 pc:px-0 h-16 flex items-center justify-between">
 
                     <h3 className="text-base font-bold">
-                        <Link href="/" className="text-title hover:text-primary">HOME</Link>
+                        <Link href="/" className="text-title hover:text-primary">{siteConfig.name || "HOME"}</Link>
                     </h3>
 
                     {/* PC 메뉴: 헤더 정중앙 정렬 */}

@@ -2,6 +2,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { AdminReservationItem } from "@/lib/adminReservation";
 import { ADMIN_STATUS_BADGE_CLASS, STATUS_LABEL } from "@/lib/reservationStatus";
+import { UNIT_LABEL } from "@/config/terms";
 
 const GRID_COLS =
     "grid-cols-[60px_minmax(120px,1.2fr)_minmax(90px,0.8fr)_minmax(110px,0.9fr)_minmax(100px,0.8fr)_minmax(110px,0.9fr)_minmax(90px,0.7fr)_minmax(150px,auto)]";
@@ -88,7 +89,7 @@ export default function AdminCancellationListView() {
             {!loading && items.length > 0 && (
                 <div className={`grid ${GRID_COLS}`}>
                     <span className="border-b border-gray-100 px-2 py-2.5 text-center text-xs font-medium text-muted">번호</span>
-                    <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">객실</span>
+                    <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">{UNIT_LABEL}</span>
                     <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">예약자</span>
                     <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">연락처</span>
                     <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">기간</span>

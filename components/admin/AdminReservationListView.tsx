@@ -9,6 +9,7 @@ import {
     ReservationStatus,
     STATUS_LABEL,
 } from "@/lib/reservationStatus";
+import { UNIT_LABEL } from "@/config/terms";
 
 const GRID_COLS =
     "grid-cols-[60px_minmax(140px,1.3fr)_minmax(90px,0.8fr)_minmax(120px,0.9fr)_minmax(110px,0.9fr)_minmax(110px,0.9fr)_minmax(50px,0.4fr)_minmax(110px,auto)]";
@@ -99,7 +100,7 @@ export default function AdminReservationListView() {
             {!loading && sorted.length > 0 && (
                 <div className={`grid ${GRID_COLS}`}>
                     <span className="border-b border-gray-100 px-2 py-2.5 text-center text-xs font-medium text-muted">번호</span>
-                    <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">객실</span>
+                    <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">{UNIT_LABEL}</span>
                     <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">예약자</span>
                     <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">연락처</span>
                     <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">기간</span>

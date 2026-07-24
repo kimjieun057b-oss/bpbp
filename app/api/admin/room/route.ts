@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { UNIT_LABEL } from '@/config/terms';
 
 const BUCKET = 'room-images';
 const ADMIN_SESSION_VALUE = 'is_authenticated_true_secret_key';
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
         const file = formData.get('file');
 
         if (typeof name !== 'string' || !name.trim()) {
-            return NextResponse.json({ error: '객실 이름을 입력해 주세요.' }, { status: 400 });
+            return NextResponse.json({ error: `${UNIT_LABEL} 이름을 입력해 주세요.` }, { status: 400 });
         }
         if (!base_price || Number(base_price) <= 0) {
             return NextResponse.json({ error: '1박당 가격을 입력해 주세요.' }, { status: 400 });
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: '최대 인원은 기준 인원 이상이어야 합니다.' }, { status: 400 });
         }
         if (!quantity || Number(quantity) <= 0) {
-            return NextResponse.json({ error: '객실 개수를 입력해 주세요.' }, { status: 400 });
+            return NextResponse.json({ error: `${UNIT_LABEL} 개수를 입력해 주세요.` }, { status: 400 });
         }
 
         let imageUrl: string | null = null;

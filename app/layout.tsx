@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "",
-  description: "",
+  title: siteConfig.name,
+  description: siteConfig.description,
   keywords: [
-    "",
+    siteConfig.name,
   ],
   openGraph: {
-    title: '',
-    description: '',
-    url: 'https://www.',
-    siteName: '',
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     images: [
       {
-        url: 'https://www./images/og_image.png',
+        url: `${siteConfig.url}${siteConfig.ogImage}`,
         width: 1200,
         height: 630,
-        alt: '',
+        alt: siteConfig.name,
       },
     ],
     locale: 'ko_KR',

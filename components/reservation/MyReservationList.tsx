@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { usePagination } from "@/hooks/usePagination";
 import { ReservationDetail } from "@/lib/reservationDetail";
 import { getDisplayStatus, CUSTOMER_STATUS_BADGE_CLASS, STATUS_LABEL } from "@/lib/reservationStatus";
+import { UNIT_LABEL } from "@/config/terms";
 import Pagination from "../common/Pagination";
 
 const ITEMS_PER_PAGE = 8;
@@ -47,7 +48,7 @@ export default function MyReservationList() {
         <>
             <div className={`card grid ${GRID_COLS} min-h-40`}>
                 <span className="border-b border-gray-100 px-2 py-2.5 text-center text-xs font-medium text-muted">번호</span>
-                <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">객실</span>
+                <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">{UNIT_LABEL}</span>
                 <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">기간</span>
                 <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">상태</span>
                 <span className="border-b border-gray-100 px-5 py-2.5 text-center text-xs font-medium text-muted">예약일</span>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import RoomForm from "@/components/form/RoomForm";
 import Toast from "@/components/common/Toast";
+import { UNIT_LABEL } from "@/config/terms";
 
 interface RoomData {
     id: string;
@@ -31,7 +32,7 @@ export default function AdminRoomEditPage() {
             try {
                 const res = await fetch(`/api/admin/room/${id}`);
                 const result = await res.json();
-                if (!res.ok) throw new Error(result.error || "객실 정보를 불러오지 못했습니다.");
+                if (!res.ok) throw new Error(result.error || `${UNIT_LABEL} 정보를 불러오지 못했습니다.`);
                 setRoom(result.data);
             } catch (err: any) {
                 setVaild(err.message || "서버 내부 오류가 발생했습니다.");
@@ -57,12 +58,12 @@ export default function AdminRoomEditPage() {
     };
 
     if (loading) return <div className="loading">정보를 불러오는 중입니다.</div>;
-    if (!room) return <div className="loading">{vaild || "객실 정보를 찾을 수 없습니다."}</div>;
+    if (!room) return <div className="loading">{vaild || `${UNIT_LABEL} 정보를 찾을 수 없습니다.`}</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-title">객실 수정</h2>
+                <h2 className="text-sm font-semibold text-title">{UNIT_LABEL} 수정</h2>
                 {confirmDelete ? (
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-body">정말 삭제하시겠습니까?</span>
@@ -75,7 +76,7 @@ export default function AdminRoomEditPage() {
                     </div>
                 ) : (
                     <button type="button" onClick={() => setConfirmDelete(true)} className="btn-danger">
-                        객실 삭제
+                        {UNIT_LABEL} 삭제
                     </button>
                 )}
             </div>

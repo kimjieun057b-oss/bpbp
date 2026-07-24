@@ -4,6 +4,7 @@ import { useCreate } from "@/hooks/useCreate";
 import { useUpdate } from "@/hooks/useUpdate";
 import Toast from "../common/Toast";
 import Link from "next/link";
+import { UNIT_LABEL, josa } from "@/config/terms";
 
 interface RoomFormData {
     name: string;
@@ -58,12 +59,12 @@ export default function RoomForm({ editId, initialData }: RoomFormOwnProps = {})
     };
 
     const { create, loading: createLoading } = useCreate('/api/admin/room', {
-        onSuccess: () => { setIsSuccess(true); setVaild("객실이 등록되었습니다."); },
+        onSuccess: () => { setIsSuccess(true); setVaild(`${josa(UNIT_LABEL, "이", "가")} 등록되었습니다.`); },
         onError: (message) => setVaild(message),
     });
 
     const { update, loading: updateLoading } = useUpdate('/api/admin/room', {
-        onSuccess: () => { setIsSuccess(true); setVaild("객실 정보가 수정되었습니다."); },
+        onSuccess: () => { setIsSuccess(true); setVaild(`${UNIT_LABEL} 정보가 수정되었습니다.`); },
         onError: (message) => setVaild(message),
     });
 
@@ -83,14 +84,14 @@ export default function RoomForm({ editId, initialData }: RoomFormOwnProps = {})
         e.preventDefault();
         if (loading) return;
 
-        if (!form.name.trim()) { setVaild("객실 이름을 입력해주세요."); return; }
+        if (!form.name.trim()) { setVaild(`${UNIT_LABEL} 이름을 입력해주세요.`); return; }
         if (!form.base_price || Number(form.base_price) <= 0) { setVaild("1박당 가격을 입력해주세요."); return; }
         if (!form.base_people || Number(form.base_people) <= 0) { setVaild("기준 인원을 입력해주세요."); return; }
         if (!form.max_people || Number(form.max_people) < Number(form.base_people)) {
             setVaild("최대 인원은 기준 인원 이상이어야 합니다.");
             return;
         }
-        if (!form.quantity || Number(form.quantity) <= 0) { setVaild("객실 개수를 입력해주세요."); return; }
+        if (!form.quantity || Number(form.quantity) <= 0) { setVaild(`${UNIT_LABEL} 개수를 입력해주세요.`); return; }
 
         const formData = new FormData();
         formData.append('name', form.name);
@@ -117,7 +118,7 @@ export default function RoomForm({ editId, initialData }: RoomFormOwnProps = {})
                 <div className="card space-y-5 p-6 md:p-8">
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="name" className="form-label">
-                            객실 이름 <span className="text-red-400">*</span>
+                            {UNIT_LABEL} 이름 <span className="text-red-400">*</span>
                         </label>
                         <input
                             type="text"
@@ -147,7 +148,7 @@ export default function RoomForm({ editId, initialData }: RoomFormOwnProps = {})
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label htmlFor="quantity" className="form-label">
-                                객실 개수 <span className="text-red-400">*</span>
+                                {UNIT_LABEL} 개수 <span className="text-red-400">*</span>
                             </label>
                             <input
                                 type="number"
@@ -209,7 +210,7 @@ export default function RoomForm({ editId, initialData }: RoomFormOwnProps = {})
                             id="description"
                             name="description"
                             rows={5}
-                            placeholder="객실/사이트에 대한 안내나 부대시설 등을 입력해주세요."
+                            placeholder={`${UNIT_LABEL}에 대한 안내나 부대시설 등을 입력해주세요.`}
                             value={form.description}
                             onChange={onChangeForm}
                             className="form-input"
@@ -220,8 +221,7 @@ export default function RoomForm({ editId, initialData }: RoomFormOwnProps = {})
                         <label className="form-label">이미지</label>
                         <div className="flex items-center gap-4">
                             {previewUrl && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={previewUrl} alt="객실 이미지 미리보기" className="h-16 w-16 rounded-lg object-cover" />
+                                <img src={previewUrl} alt={`${UNIT_LABEL} 이미지 미리보기`} className="h-16 w-16 rounded-lg object-cover" />
                             )}
                             <div className="flex items-center gap-3">
                                 <input type="file" id="image" name="image" accept="image/*" className="hidden" onChange={onChangeImage} />

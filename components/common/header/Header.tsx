@@ -1,5 +1,6 @@
 "use client"
 import { USER_CATEGORY } from "@/datas/categories";
+import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import LogoutButton from "../LogoutButton";
@@ -42,7 +43,7 @@ export default function Header() {
 
                     <div>
                         <h3 className="text-base font-bold">
-                            <Link href="/" className="text-title hover:text-primary">HOME</Link>
+                            <Link href="/" className="text-title hover:text-primary">{siteConfig.name || "HOME"}</Link>
                         </h3>
                     </div>
 

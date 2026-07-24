@@ -7,6 +7,7 @@ import Toast from "../common/Toast";
 import { supabase } from "@/lib/supabase";
 import { formatDateISO, isDateRangeOverlapping } from "@/lib/reservationDate";
 import { AddonOption } from "@/lib/reservationOptions";
+import { UNIT_LABEL, josa } from "@/config/terms";
 
 interface Booking {
     room_id: string;
@@ -183,7 +184,7 @@ export default function ReservationRegisterClient() {
         if (submitting) return;
 
         if (!checkIn || !checkOut || !selectedRoomId) {
-            setVaild("체크인/체크아웃 날짜와 객실을 선택해 주세요.");
+            setVaild(`체크인/체크아웃 날짜와 ${josa(UNIT_LABEL, "을", "를")} 선택해 주세요.`);
             return;
         }
         if (!name.trim()) {

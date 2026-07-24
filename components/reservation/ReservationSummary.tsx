@@ -1,5 +1,6 @@
 import { AddonOption, calcOptionsPrice } from "@/lib/reservationOptions";
 import { calcNights } from "@/lib/reservationDate";
+import { UNIT_LABEL, josa } from "@/config/terms";
 
 export interface Room {
     id: string;
@@ -45,7 +46,7 @@ function formatPeriodLabel(checkIn: string | null, checkOut: string | null, nigh
 /*
 진행중
 1. 예약 리스트 관리 : 숫자 배지 / 실시간 예약 달력 (이번달 예약 : 최신순으로 배치, 페이지네이션)
-2. 관리자도 고객의 예약을 취소할 수 있도록 기능 개선 / clander 흐름 확인, 예약된 것만 실시간 반영 (취소, 체크인 체크아웃은 안됨)
+2. 관리자도 고객의 예약을 취소할 수 있도록 기능 개선 / google clander 기능 사용 흐름 확인, 예약된 것만 실시간 반영됨 (취소, 체크인 체크아웃은 안됨)
 
 3. 환불 대기중 -> 예약 취소 확정, 환불 완료 추가
 ㄴ 예약 상태 뱃지 : 예약 칸이 살아있는가 (취소 신청중, 취소 확정, 정상예약)
@@ -53,10 +54,8 @@ function formatPeriodLabel(checkIn: string | null, checkOut: string | null, nigh
 --> 고객이 취소 신청 > 관리자 취소 승인 시 '예약 취소 확정', 환불 대기중 뱃지가 둘다 표시됨 --> 환불 완료 시, 취소확정, 환불완료 뱃지 둘다 표시
 * PG사 연동 시, 버튼 클릭으로 자동으로 pg api가 환불실행하는지 확인하기
 
-4. MailUiTemplate ui 수정 필요
-
-5. 캠핑장 홈페이지 만들기 (prd > 진짜 홈페이지처럼 ui 꾸미기 / 전반적으로 mo&pc 버전 style 검토) -> 관리자 UI 이쁘게
-6. 예시로 캠핑장으로 만들긴 했지만 펜션, 풀빌라에도 바로 활용이 가능한지 확인
+4. 캠핑장 홈페이지 만들기 (prd > 진짜 홈페이지처럼 ui 꾸미기 / 전반적으로 mo&pc 버전 style 검토) -> 관리자 UI 이쁘게
+5. 예시로 캠핑장으로 만들긴 했지만 펜션, 풀빌라에도 바로 활용이 가능한지 확인
 
 추후 확장 예정 : PG사 결제 연동(free test용 -> 환불 관리, 환불 정책 추가) / ERP - 매출확인
 확장 : sms api (문의 폼, 예약 완료/취소 알림)
@@ -103,7 +102,7 @@ export default function ReservationSummary({
             </div>
 
             <div className="border-t border-gray-100 pt-5">
-                <h4 className="mb-3 text-sm font-semibold text-title">객실/사이트 선택</h4>
+                <h4 className="mb-3 text-sm font-semibold text-title">{UNIT_LABEL} 선택</h4>
                 <div className="space-y-2">
                     {rooms.map((room) => {
                         const isUnavailable = unavailableRoomIds.has(room.id);
@@ -133,7 +132,9 @@ export default function ReservationSummary({
                             </label>
                         );
                     })}
-                    {rooms.length === 0 && <p className="text-xs text-muted">등록된 객실이 없습니다.</p>}
+                    {rooms.length === 0 && (
+                        <p className="text-xs text-muted">등록된 {josa(UNIT_LABEL, "이", "가")} 없습니다.</p>
+                    )}
                 </div>
             </div>
 
@@ -224,7 +225,7 @@ export default function ReservationSummary({
 
             <div className="space-y-1.5 border-t border-gray-100 pt-5">
                 <div className="flex items-center justify-between text-sm text-body">
-                    <span>객실 요금</span>
+                    <span>{UNIT_LABEL} 요금</span>
                     <span>{roomPrice.toLocaleString()}원</span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-body">
